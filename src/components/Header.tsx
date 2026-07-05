@@ -11,12 +11,15 @@ export function Header({ onLogoClick }: HeaderProps) {
         <button
           type="button"
           onClick={onLogoClick}
-          className="transition-smooth flex items-center gap-2 rounded-full focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary"
+          className="transition-smooth group flex items-center gap-2 rounded-full hover:scale-105 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary"
         >
-          <span className="text-2xl" aria-hidden="true">
+          <span
+            className="transition-smooth inline-block text-2xl group-hover:-rotate-12"
+            aria-hidden="true"
+          >
             🐾
           </span>
-          <span className="text-lg font-extrabold tracking-tight text-text sm:text-xl">
+          <span className="transition-smooth text-lg font-extrabold tracking-tight text-text group-hover:text-primary sm:text-xl">
             Canine Companion
           </span>
         </button>
