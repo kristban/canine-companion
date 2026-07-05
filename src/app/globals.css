@@ -1,0 +1,46 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --color-primary: #ea580c;
+  --color-secondary: #d97706;
+  --color-accent: #ec4899;
+  --color-background: #fffbeb;
+  --color-surface: #ffffff;
+  --color-text: #292524;
+  --color-muted: #78716c;
+  --color-border: #fde9c8;
+  --font-sans: var(--font-nunito);
+}
+
+.dark {
+  --color-primary: #fb923c;
+  --color-secondary: #f59e0b;
+  --color-accent: #f472b6;
+  --color-background: #1c1917;
+  --color-surface: #292524;
+  --color-text: #fafaf9;
+  --color-muted: #a8a29e;
+  --color-border: #44403c;
+}
+
+body {
+  background-color: var(--color-background);
+  color: var(--color-text);
+  font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+* {
+  scrollbar-color: var(--color-secondary) transparent;
+}
+
+@layer utilities {
+  .transition-smooth {
+    transition-property: color, background-color, border-color, box-shadow,
+      transform, opacity;
+    transition-duration: 200ms;
+    transition-timing-function: ease;
+  }
+}
