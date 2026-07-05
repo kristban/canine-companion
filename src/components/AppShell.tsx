@@ -22,7 +22,7 @@ export function AppShell() {
 
   return (
     <div className="flex min-h-screen flex-col">
-      <Header />
+      <Header onLogoClick={() => setView("landing")} />
       <main className="flex flex-1 flex-col">
         {view === "landing" && (
           <Landing onStart={() => setView("quiz")} />
