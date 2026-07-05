@@ -1,12 +1,15 @@
 import { MatchResult } from "@/lib/match";
+import { QuizOption } from "@/lib/questions";
 import { BreedCard } from "./BreedCard";
+import { AnswersRecap } from "./AnswersRecap";
 
 interface ResultsProps {
   results: MatchResult[];
+  answers: QuizOption[];
   onRestart: () => void;
 }
 
-export function Results({ results, onRestart }: ResultsProps) {
+export function Results({ results, answers, onRestart }: ResultsProps) {
   const topResults = results.slice(0, 5);
 
   return (
@@ -23,6 +26,8 @@ export function Results({ results, onRestart }: ResultsProps) {
           lifestyle.
         </p>
       </div>
+
+      <AnswersRecap answers={answers} />
 
       <div className="flex flex-col gap-4">
         {topResults.map((result, index) => (

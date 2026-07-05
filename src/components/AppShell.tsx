@@ -14,9 +14,11 @@ type View = "landing" | "quiz" | "results";
 export function AppShell() {
   const [view, setView] = useState<View>("landing");
   const [results, setResults] = useState<MatchResult[]>([]);
+  const [answers, setAnswers] = useState<QuizOption[]>([]);
 
-  function handleComplete(answers: QuizOption[]) {
-    setResults(matchBreeds(answers));
+  function handleComplete(quizAnswers: QuizOption[]) {
+    setAnswers(quizAnswers);
+    setResults(matchBreeds(quizAnswers));
     setView("results");
   }
 
@@ -34,7 +36,11 @@ export function AppShell() {
           />
         )}
         {view === "results" && (
-          <Results results={results} onRestart={() => setView("quiz")} />
+          <Results
+            results={results}
+            answers={answers}
+            onRestart={() => setView("quiz")}
+          />
         )}
       </main>
       <Footer />
