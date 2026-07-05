@@ -1,4 +1,5 @@
 import { HowItWorks } from "./HowItWorks";
+import { BreedShowcase } from "./BreedShowcase";
 
 interface LandingProps {
   onStart: () => void;
@@ -36,6 +37,7 @@ export function Landing({ onStart }: LandingProps) {
       </section>
 
       <HowItWorks />
+      <BreedShowcase />
     </div>
   );
 }
