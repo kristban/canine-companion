@@ -17,6 +17,10 @@ export interface Breed {
   independence: number;
   noviceFriendly: number;
   vocal: number;
+  /** Suitability as a jogging/running companion, independent of general energy */
+  runningPartner: number;
+  heatTolerance: number;
+  coldTolerance: number;
 }
 
 export const breeds: Breed[] = [
@@ -37,6 +41,9 @@ export const breeds: Breed[] = [
     independence: 2,
     noviceFriendly: 5,
     vocal: 2,
+    runningPartner: 5,
+    heatTolerance: 3,
+    coldTolerance: 4,
   },
   {
     id: "golden-retriever",
@@ -55,6 +62,9 @@ export const breeds: Breed[] = [
     independence: 2,
     noviceFriendly: 5,
     vocal: 2,
+    runningPartner: 4,
+    heatTolerance: 3,
+    coldTolerance: 4,
   },
   {
     id: "french-bulldog",
@@ -73,6 +83,9 @@ export const breeds: Breed[] = [
     independence: 2,
     noviceFriendly: 4,
     vocal: 2,
+    runningPartner: 1,
+    heatTolerance: 1,
+    coldTolerance: 2,
   },
   {
     id: "standard-poodle",
@@ -91,6 +104,9 @@ export const breeds: Breed[] = [
     independence: 2,
     noviceFriendly: 4,
     vocal: 2,
+    runningPartner: 4,
+    heatTolerance: 3,
+    coldTolerance: 3,
   },
   {
     id: "chihuahua",
@@ -109,6 +125,9 @@ export const breeds: Breed[] = [
     independence: 2,
     noviceFriendly: 3,
     vocal: 5,
+    runningPartner: 1,
+    heatTolerance: 2,
+    coldTolerance: 1,
   },
   {
     id: "beagle",
@@ -127,6 +146,9 @@ export const breeds: Breed[] = [
     independence: 2,
     noviceFriendly: 3,
     vocal: 5,
+    runningPartner: 3,
+    heatTolerance: 3,
+    coldTolerance: 3,
   },
   {
     id: "german-shepherd",
@@ -145,6 +167,9 @@ export const breeds: Breed[] = [
     independence: 3,
     noviceFriendly: 3,
     vocal: 3,
+    runningPartner: 5,
+    heatTolerance: 3,
+    coldTolerance: 4,
   },
   {
     id: "border-collie",
@@ -163,6 +188,9 @@ export const breeds: Breed[] = [
     independence: 2,
     noviceFriendly: 2,
     vocal: 3,
+    runningPartner: 5,
+    heatTolerance: 3,
+    coldTolerance: 4,
   },
   {
     id: "bulldog",
@@ -181,6 +209,9 @@ export const breeds: Breed[] = [
     independence: 3,
     noviceFriendly: 3,
     vocal: 1,
+    runningPartner: 1,
+    heatTolerance: 1,
+    coldTolerance: 2,
   },
   {
     id: "cavalier-king-charles-spaniel",
@@ -199,6 +230,9 @@ export const breeds: Breed[] = [
     independence: 1,
     noviceFriendly: 5,
     vocal: 2,
+    runningPartner: 2,
+    heatTolerance: 3,
+    coldTolerance: 3,
   },
   {
     id: "dachshund",
@@ -217,6 +251,9 @@ export const breeds: Breed[] = [
     independence: 3,
     noviceFriendly: 3,
     vocal: 5,
+    runningPartner: 2,
+    heatTolerance: 3,
+    coldTolerance: 2,
   },
   {
     id: "shih-tzu",
@@ -235,6 +272,9 @@ export const breeds: Breed[] = [
     independence: 2,
     noviceFriendly: 4,
     vocal: 2,
+    runningPartner: 1,
+    heatTolerance: 2,
+    coldTolerance: 2,
   },
   {
     id: "australian-shepherd",
@@ -253,6 +293,9 @@ export const breeds: Breed[] = [
     independence: 2,
     noviceFriendly: 2,
     vocal: 3,
+    runningPartner: 5,
+    heatTolerance: 3,
+    coldTolerance: 4,
   },
   {
     id: "boxer",
@@ -271,6 +314,9 @@ export const breeds: Breed[] = [
     independence: 2,
     noviceFriendly: 3,
     vocal: 2,
+    runningPartner: 4,
+    heatTolerance: 2,
+    coldTolerance: 3,
   },
   {
     id: "pug",
@@ -289,6 +335,9 @@ export const breeds: Breed[] = [
     independence: 2,
     noviceFriendly: 5,
     vocal: 2,
+    runningPartner: 1,
+    heatTolerance: 1,
+    coldTolerance: 2,
   },
   {
     id: "pembroke-welsh-corgi",
@@ -307,6 +356,9 @@ export const breeds: Breed[] = [
     independence: 2,
     noviceFriendly: 4,
     vocal: 4,
+    runningPartner: 2,
+    heatTolerance: 3,
+    coldTolerance: 3,
   },
   {
     id: "great-dane",
@@ -325,6 +377,9 @@ export const breeds: Breed[] = [
     independence: 2,
     noviceFriendly: 3,
     vocal: 2,
+    runningPartner: 2,
+    heatTolerance: 3,
+    coldTolerance: 2,
   },
   {
     id: "siberian-husky",
@@ -343,6 +398,9 @@ export const breeds: Breed[] = [
     independence: 4,
     noviceFriendly: 1,
     vocal: 5,
+    runningPartner: 5,
+    heatTolerance: 1,
+    coldTolerance: 5,
   },
   {
     id: "yorkshire-terrier",
@@ -361,6 +419,9 @@ export const breeds: Breed[] = [
     independence: 2,
     noviceFriendly: 3,
     vocal: 4,
+    runningPartner: 1,
+    heatTolerance: 3,
+    coldTolerance: 2,
   },
   {
     id: "basset-hound",
@@ -379,5 +440,8 @@ export const breeds: Breed[] = [
     independence: 3,
     noviceFriendly: 3,
     vocal: 4,
+    runningPartner: 1,
+    heatTolerance: 3,
+    coldTolerance: 3,
   },
 ];

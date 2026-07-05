@@ -9,7 +9,10 @@ export type Trait =
   | "apartmentFriendly"
   | "independence"
   | "noviceFriendly"
-  | "vocal";
+  | "vocal"
+  | "runningPartner"
+  | "heatTolerance"
+  | "coldTolerance";
 
 /**
  * How a contribution is scored against a breed's trait value (1-5 scale):
@@ -97,6 +100,84 @@ export const questions: QuizQuestion[] = [
         label: "Very active — runs, hikes, or sports",
         icon: "🏃",
         contributions: [{ trait: "energy", target: 5, mode: "match", weight: 3 }],
+      },
+    ],
+  },
+  {
+    id: "exercise-style",
+    question: "What kind of exercise are you hoping to share with your dog?",
+    helperText:
+      "Some breeds make eager running partners; others prefer a gentler pace.",
+    options: [
+      {
+        id: "calm-walks",
+        label: "Calm, easy walks — a relaxed pace works best for us",
+        icon: "🚶‍♀️",
+        contributions: [
+          { trait: "energy", target: 1, mode: "match", weight: 2 },
+        ],
+      },
+      {
+        id: "casual-runs",
+        label: "A few easy runs or jogs a week — just some company",
+        icon: "🏃‍♂️",
+        contributions: [
+          { trait: "runningPartner", target: 3, mode: "min", weight: 3 },
+          { trait: "energy", target: 3, mode: "match", weight: 1 },
+        ],
+      },
+      {
+        id: "serious-mileage",
+        label: "Frequent, serious mileage — a true running partner",
+        icon: "🏅",
+        contributions: [
+          { trait: "runningPartner", target: 5, mode: "min", weight: 3 },
+          { trait: "energy", target: 5, mode: "match", weight: 1 },
+        ],
+      },
+      {
+        id: "play-only",
+        label: "Just playtime and games — no running needed",
+        icon: "🎾",
+        contributions: [],
+      },
+    ],
+  },
+  {
+    id: "climate",
+    question: "What's the climate like where you live?",
+    helperText: "Some coats handle heat or cold far better than others.",
+    options: [
+      {
+        id: "hot",
+        label: "Hot or warm most of the year",
+        icon: "☀️",
+        contributions: [
+          { trait: "heatTolerance", target: 4, mode: "min", weight: 3 },
+        ],
+      },
+      {
+        id: "cold",
+        label: "Cold with snowy winters",
+        icon: "❄️",
+        contributions: [
+          { trait: "coldTolerance", target: 4, mode: "min", weight: 3 },
+        ],
+      },
+      {
+        id: "mild",
+        label: "Mild, with four distinct seasons",
+        icon: "🍂",
+        contributions: [
+          { trait: "heatTolerance", target: 3, mode: "min", weight: 1 },
+          { trait: "coldTolerance", target: 3, mode: "min", weight: 1 },
+        ],
+      },
+      {
+        id: "varies",
+        label: "Varies a lot / no strong preference",
+        icon: "🌦️",
+        contributions: [],
       },
     ],
   },
