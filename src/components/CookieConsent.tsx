@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useSyncExternalStore } from "react";
+import Link from "next/link";
 
 const STORAGE_KEY = "canine-companion-cookie-consent";
 
@@ -46,12 +47,12 @@ export function CookieConsent() {
           We use cookies to remember your preferences and improve your
           experience. By clicking &ldquo;Accept&rdquo;, you consent to our use
           of cookies in line with GDPR. See our{" "}
-          <a
-            href="#"
+          <Link
+            href="/cookies"
             className="font-semibold text-primary underline underline-offset-2 hover:text-secondary"
           >
             Cookie Policy
-          </a>{" "}
+          </Link>{" "}
           for details.
         </p>
         <div className="flex shrink-0 gap-3">

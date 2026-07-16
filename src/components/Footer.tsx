@@ -1,12 +1,14 @@
+import Link from "next/link";
+
 const productLinks = [
-  { label: "How it works", href: "#how-it-works-heading" },
-  { label: "Meet the breeds", href: "#breed-showcase-heading" },
+  { label: "How it works", href: "/#how-it-works-heading" },
+  { label: "Meet the breeds", href: "/#breed-showcase-heading" },
 ];
 
 const legalLinks = [
-  { label: "Privacy Policy", href: "#" },
-  { label: "Cookie Policy", href: "#" },
-  { label: "Terms of Service", href: "#" },
+  { label: "Privacy Policy", href: "/privacy" },
+  { label: "Cookie Policy", href: "/cookies" },
+  { label: "Terms of Service", href: "/terms" },
 ];
 
 export function Footer() {
@@ -43,12 +45,12 @@ export function Footer() {
             <ul className="mt-4 flex flex-col gap-2.5">
               {productLinks.map((link) => (
                 <li key={link.label}>
-                  <a
+                  <Link
                     href={link.href}
                     className="transition-smooth text-sm text-muted hover:text-primary"
                   >
                     {link.label}
-                  </a>
+                  </Link>
                 </li>
               ))}
             </ul>
@@ -64,12 +66,12 @@ export function Footer() {
             <ul className="mt-4 flex flex-col gap-2.5">
               {legalLinks.map((link) => (
                 <li key={link.label}>
-                  <a
+                  <Link
                     href={link.href}
                     className="transition-smooth text-sm text-muted hover:text-primary"
                   >
                     {link.label}
-                  </a>
+                  </Link>
                 </li>
               ))}
             </ul>
