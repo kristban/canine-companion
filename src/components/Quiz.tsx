@@ -38,14 +38,14 @@ export function Quiz({ onComplete, onCancel }: QuizProps) {
   return (
     <section className="mx-auto flex w-full max-w-2xl flex-1 flex-col px-4 py-10 sm:px-6">
       <div className="mb-8">
-        <div className="mb-2 flex items-center justify-between text-sm font-medium text-muted">
+        <div className="mb-2 flex items-center justify-between text-sm font-bold text-muted">
           <span>
             Question {step + 1} of {questions.length}
           </span>
           <span>{progress}%</span>
         </div>
         <div
-          className="h-2 w-full overflow-hidden rounded-full bg-border"
+          className="h-3 w-full overflow-hidden rounded-full border-2 border-border bg-background-alt"
           role="progressbar"
           aria-valuenow={progress}
           aria-valuemin={0}
@@ -59,7 +59,7 @@ export function Quiz({ onComplete, onCancel }: QuizProps) {
         </div>
       </div>
 
-      <h2 className="text-2xl font-extrabold tracking-tight text-text sm:text-3xl">
+      <h2 className="font-display text-2xl font-semibold tracking-tight text-text sm:text-3xl">
         {question.question}
       </h2>
       <p className="mt-2 text-muted">{question.helperText}</p>
@@ -74,10 +74,10 @@ export function Quiz({ onComplete, onCancel }: QuizProps) {
               type="button"
               onClick={() => selectOption(option)}
               aria-pressed={isSelected}
-              className={`transition-smooth flex items-center gap-4 rounded-2xl border-2 px-5 py-4 text-left hover:-translate-y-0.5 hover:shadow-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary ${
+              className={`transition-smooth flex items-center gap-4 rounded-2xl border-2 border-border px-5 py-4 text-left hover:-translate-y-0.5 hover:shadow-hard-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary ${
                 isSelected
-                  ? "border-primary bg-primary/10"
-                  : "border-border bg-surface hover:border-primary/60"
+                  ? "bg-secondary/40 shadow-hard-sm"
+                  : "bg-surface"
               }`}
             >
               <span className="text-2xl" aria-hidden="true">
@@ -94,7 +94,7 @@ export function Quiz({ onComplete, onCancel }: QuizProps) {
       <button
         type="button"
         onClick={goBack}
-        className="transition-smooth mt-8 self-start rounded-full px-4 py-2 text-sm font-semibold text-muted hover:text-primary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+        className="transition-smooth mt-8 self-start rounded-full border-2 border-border bg-surface px-5 py-2.5 text-sm font-bold text-text hover:-translate-y-0.5 hover:shadow-hard-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
       >
         ← {step === 0 ? "Cancel" : "Back"}
       </button>

@@ -15,10 +15,13 @@ export function Results({ results, answers, onRestart }: ResultsProps) {
   return (
     <section className="mx-auto flex w-full max-w-3xl flex-1 flex-col px-4 py-10 sm:px-6">
       <div className="mb-8 text-center">
-        <span className="text-5xl" aria-hidden="true">
+        <span
+          className="mx-auto flex h-16 w-16 items-center justify-center rounded-full border-2 border-border bg-secondary text-4xl"
+          aria-hidden="true"
+        >
           🎉
         </span>
-        <h2 className="mt-4 text-3xl font-extrabold tracking-tight text-text sm:text-4xl">
+        <h2 className="mt-4 font-display text-3xl font-semibold tracking-tight text-text sm:text-4xl">
           Your best-matched breeds
         </h2>
         <p className="mt-2 text-muted">
@@ -39,7 +42,7 @@ export function Results({ results, answers, onRestart }: ResultsProps) {
         <button
           type="button"
           onClick={onRestart}
-          className="transition-smooth rounded-full border-2 border-primary px-8 py-3 text-base font-bold text-primary hover:-translate-y-0.5 hover:bg-primary hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+          className="transition-smooth rounded-full border-2 border-border bg-primary px-8 py-3 text-base font-bold text-white shadow-hard-sm hover:-translate-y-0.5 hover:shadow-hard focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
         >
           Retake the quiz
         </button>

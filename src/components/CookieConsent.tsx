@@ -35,7 +35,7 @@ export function CookieConsent() {
       aria-live="polite"
       aria-label="Cookie consent"
       aria-hidden={!visible}
-      className={`transition-smooth fixed inset-x-0 bottom-0 z-20 border-t border-border bg-surface px-4 py-5 shadow-[0_-4px_20px_rgba(0,0,0,0.08)] sm:px-6 ${
+      className={`transition-smooth fixed inset-x-0 bottom-0 z-20 border-t-3 border-border bg-surface px-4 py-5 sm:px-6 ${
         visible
           ? "translate-y-0 opacity-100"
           : "pointer-events-none translate-y-full opacity-0"
@@ -43,7 +43,7 @@ export function CookieConsent() {
     >
       <div className="mx-auto flex w-full max-w-5xl flex-col items-center gap-4 sm:flex-row sm:justify-between">
         <p className="text-center text-sm leading-relaxed text-muted sm:text-left">
-          We use cookies to remember your theme preference and improve your
+          We use cookies to remember your preferences and improve your
           experience. By clicking &ldquo;Accept&rdquo;, you consent to our use
           of cookies in line with GDPR. See our{" "}
           <a
@@ -58,14 +58,14 @@ export function CookieConsent() {
           <button
             type="button"
             onClick={() => respond("declined")}
-            className="transition-smooth rounded-full border-2 border-border px-5 py-2.5 text-sm font-bold text-text hover:border-primary hover:text-primary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+            className="transition-smooth rounded-full border-2 border-border bg-surface px-5 py-2.5 text-sm font-bold text-text hover:-translate-y-0.5 hover:shadow-hard-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
           >
             Decline
           </button>
           <button
             type="button"
             onClick={() => respond("accepted")}
-            className="transition-smooth rounded-full bg-primary px-5 py-2.5 text-sm font-bold text-white hover:bg-secondary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+            className="transition-smooth rounded-full border-2 border-border bg-primary px-5 py-2.5 text-sm font-bold text-white hover:-translate-y-0.5 hover:shadow-hard-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
           >
             Accept
           </button>
