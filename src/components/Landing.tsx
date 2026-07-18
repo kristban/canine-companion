@@ -33,7 +33,7 @@ export function Landing({ onStart }: LandingProps) {
             </p>
           </div>
 
-          <div className="order-1 flex justify-center lg:order-2">
+          <div className="order-1 hidden justify-center sm:flex lg:order-2">
             <div className="relative w-full max-w-sm sm:max-w-md">
               <div className="relative aspect-[4/3] w-full overflow-hidden rounded-[2.5rem] border-3 border-border shadow-hard">
                 <Image
