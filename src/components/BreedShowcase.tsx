@@ -54,7 +54,7 @@ export function BreedShowcase() {
         <div className="text-center">
           <h2
             id="breed-showcase-heading"
-            className="font-display text-3xl font-semibold tracking-tight text-text sm:text-4xl"
+            className="scroll-mt-24 font-display text-3xl font-semibold tracking-tight text-text sm:text-4xl"
           >
             Meet a few popular breeds
           </h2>

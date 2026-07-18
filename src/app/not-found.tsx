@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
+import { SignupForm } from "@/components/SignupForm";
 
 export const metadata: Metadata = {
   title: "Page Not Found — Canine Companion",
@@ -42,6 +43,7 @@ export default function NotFound() {
           Back to home 🐾
         </Link>
       </main>
+      <SignupForm />
       <Footer />
     </div>
   );

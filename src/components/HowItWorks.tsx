@@ -37,7 +37,7 @@ export function HowItWorks() {
         <div className="text-center">
           <h2
             id="how-it-works-heading"
-            className="font-display text-3xl font-semibold tracking-tight text-text sm:text-4xl"
+            className="scroll-mt-24 font-display text-3xl font-semibold tracking-tight text-text sm:text-4xl"
           >
             How it works
           </h2>

@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 interface HeaderProps {
@@ -30,6 +31,14 @@ export function Header({ onLogoClick, onStart }: HeaderProps) {
             Canine Companion
           </span>
         </button>
+        <nav aria-label="Primary" className="hidden sm:block">
+          <Link
+            href="#signup-heading"
+            className="transition-smooth text-sm font-bold text-text hover:text-primary"
+          >
+            Newsletter
+          </Link>
+        </nav>
         <button
           type="button"
           onClick={handleStart}

@@ -6,6 +6,7 @@ import { Footer } from "./Footer";
 import { Landing } from "./Landing";
 import { Quiz } from "./Quiz";
 import { Results } from "./Results";
+import { SignupForm } from "./SignupForm";
 import { QuizOption } from "@/lib/questions";
 import { matchBreeds, MatchResult } from "@/lib/match";
 
@@ -46,6 +47,7 @@ export function AppShell() {
           />
         )}
       </main>
+      <SignupForm />
       <Footer />
     </div>
   );

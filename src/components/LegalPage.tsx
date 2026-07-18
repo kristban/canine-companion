@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import Link from "next/link";
 import { Header } from "./Header";
 import { Footer } from "./Footer";
+import { SignupForm } from "./SignupForm";
 
 interface LegalPageProps {
   title: string;
@@ -34,6 +35,7 @@ export function LegalPage({ title, updated, children }: LegalPageProps) {
           </div>
         </div>
       </main>
+      <SignupForm />
       <Footer />
     </div>
   );

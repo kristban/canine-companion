@@ -3,6 +3,7 @@ import Link from "next/link";
 const productLinks = [
   { label: "How it works", href: "/#how-it-works-heading" },
   { label: "Meet the breeds", href: "/#breed-showcase-heading" },
+  { label: "Newsletter", href: "#signup-heading" },
 ];
 
 const legalLinks = [
