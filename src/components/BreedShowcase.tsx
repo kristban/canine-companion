@@ -29,7 +29,9 @@ const AUTO_ADVANCE_MS = 6000;
 
 export function BreedShowcase() {
   const [index, setIndex] = useState(0);
-  const [isPaused, setIsPaused] = useState(false);
+  const [isHoverPaused, setIsHoverPaused] = useState(false);
+  const [isManuallyPaused, setIsManuallyPaused] = useState(false);
+  const isPaused = isHoverPaused || isManuallyPaused;
   const total = showcaseBreeds.length;
   const breed = showcaseBreeds[index];
 
@@ -65,10 +67,10 @@ export function BreedShowcase() {
 
         <div
           className="relative mt-10"
-          onMouseEnter={() => setIsPaused(true)}
-          onMouseLeave={() => setIsPaused(false)}
-          onFocus={() => setIsPaused(true)}
-          onBlur={() => setIsPaused(false)}
+          onMouseEnter={() => setIsHoverPaused(true)}
+          onMouseLeave={() => setIsHoverPaused(false)}
+          onFocus={() => setIsHoverPaused(true)}
+          onBlur={() => setIsHoverPaused(false)}
         >
           <div
             role="group"
@@ -78,7 +80,6 @@ export function BreedShowcase() {
           >
             <div
               key={breed.id}
-              aria-live="polite"
               className="flex flex-1 flex-col gap-6 sm:flex-row sm:items-center"
             >
               <div className="flex shrink-0 flex-col items-center text-center sm:w-40">
@@ -181,6 +182,20 @@ export function BreedShowcase() {
             className="transition-smooth flex h-9 w-9 items-center justify-center rounded-full border-2 border-border bg-surface text-lg hover:bg-secondary/40 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary sm:hidden"
           >
             →
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setIsManuallyPaused((current) => !current)}
+            aria-pressed={isManuallyPaused}
+            aria-label={
+              isManuallyPaused
+                ? "Play automatic breed rotation"
+                : "Pause automatic breed rotation"
+            }
+            className="transition-smooth flex h-9 w-9 items-center justify-center rounded-full border-2 border-border bg-surface text-base hover:bg-secondary/40 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+          >
+            {isManuallyPaused ? "▶" : "⏸"}
           </button>
         </div>
       </div>

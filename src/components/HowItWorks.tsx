@@ -26,6 +26,7 @@ const steps: Step[] = [
 ];
 
 const STEP_COLORS = ["bg-secondary", "bg-primary", "bg-accent"];
+const STEP_TEXT_COLORS = ["text-text", "text-white", "text-text"];
 
 export function HowItWorks() {
   return (
@@ -53,7 +54,7 @@ export function HowItWorks() {
               className="transition-smooth relative flex flex-col items-center rounded-3xl border-3 border-border bg-surface p-6 text-center shadow-hard hover:-translate-y-1"
             >
               <span
-                className={`absolute -top-5 flex h-10 w-10 items-center justify-center rounded-full border-2 border-border ${STEP_COLORS[index]} text-sm font-extrabold text-text`}
+                className={`absolute -top-5 flex h-10 w-10 items-center justify-center rounded-full border-2 border-border ${STEP_COLORS[index]} text-sm font-extrabold ${STEP_TEXT_COLORS[index]}`}
                 aria-hidden="true"
               >
                 {index + 1}

@@ -141,27 +141,35 @@ export function SignupForm() {
       </div>
 
       <div
-        role="status"
-        aria-live="polite"
         className={`transition-smooth fixed right-4 top-20 z-30 sm:right-6 ${
           toastVisible
             ? "translate-x-0 opacity-100"
             : "pointer-events-none translate-x-[120%] opacity-0"
         }`}
       >
-        <div className="flex items-center gap-3 rounded-2xl border-2 border-border bg-surface px-5 py-4 shadow-hard">
-          <span
-            className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border-2 border-border bg-secondary text-sm font-bold text-text"
-            aria-hidden="true"
-          >
-            ✓
-          </span>
-          <div>
-            <p className="text-sm font-bold text-text">You&apos;re signed up!</p>
-            <p className="text-xs text-muted">
-              We&apos;ll let you know when there&apos;s news.
-            </p>
-          </div>
+        <div
+          role="status"
+          aria-live="polite"
+          className="flex items-center gap-3 rounded-2xl border-2 border-border bg-surface px-5 py-4 shadow-hard"
+        >
+          {toastVisible && (
+            <>
+              <span
+                className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border-2 border-border bg-secondary text-sm font-bold text-text"
+                aria-hidden="true"
+              >
+                ✓
+              </span>
+              <div>
+                <p className="text-sm font-bold text-text">
+                  You&apos;re signed up!
+                </p>
+                <p className="text-xs text-muted">
+                  We&apos;ll let you know when there&apos;s news.
+                </p>
+              </div>
+            </>
+          )}
         </div>
       </div>
     </section>

@@ -40,7 +40,6 @@ export function Landing({ onStart }: LandingProps) {
                   src="/IMG_27872.jpeg"
                   alt="A small Shih Tzu and a large Old English Sheepdog sitting side by side on a patio"
                   fill
-                  priority
                   sizes="(min-width: 1024px) 448px, (min-width: 640px) 448px, 384px"
                   className="object-cover"
                 />

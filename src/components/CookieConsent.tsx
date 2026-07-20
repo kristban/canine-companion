@@ -36,6 +36,7 @@ export function CookieConsent() {
       aria-live="polite"
       aria-label="Cookie consent"
       aria-hidden={!visible}
+      inert={!visible}
       className={`transition-smooth fixed inset-x-0 bottom-0 z-20 border-t-3 border-border bg-surface px-4 py-5 sm:px-6 ${
         visible
           ? "translate-y-0 opacity-100"
