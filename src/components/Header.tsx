@@ -11,7 +11,7 @@ interface HeaderProps {
 export function Header({ onLogoClick, onStart }: HeaderProps) {
   const router = useRouter();
   const handleLogoClick = onLogoClick ?? (() => router.push("/"));
-  const handleStart = onStart ?? (() => router.push("/"));
+  const handleStart = onStart ?? (() => router.push("/?start=quiz"));
 
   return (
     <header className="sticky top-0 z-10 border-b-3 border-border bg-background/95 backdrop-blur">

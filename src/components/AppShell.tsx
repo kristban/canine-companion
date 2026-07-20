@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Header } from "./Header";
 import { Footer } from "./Footer";
 import { Landing } from "./Landing";
@@ -16,6 +16,14 @@ export function AppShell() {
   const [view, setView] = useState<View>("landing");
   const [results, setResults] = useState<MatchResult[]>([]);
   const [answers, setAnswers] = useState<QuizOption[]>([]);
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("start") === "quiz") {
+      setView("quiz");
+      window.history.replaceState(null, "", "/");
+    }
+  }, []);
 
   function handleComplete(quizAnswers: QuizOption[]) {
     setAnswers(quizAnswers);
