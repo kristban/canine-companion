@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { Breed, breeds } from "@/lib/breeds";
+import { useEffect, useMemo, useState } from "react";
+import { Breed } from "@/lib/breeds";
 
 const SHOWCASE_BREED_IDS = [
   "labrador-retriever",
@@ -14,10 +14,6 @@ const SHOWCASE_BREED_IDS = [
   "cavalier-king-charles-spaniel",
 ];
 
-const showcaseBreeds = SHOWCASE_BREED_IDS.map((id) =>
-  breeds.find((breed) => breed.id === id)
-).filter((breed): breed is Breed => Boolean(breed));
-
 const traitStats: { key: keyof Breed; label: string; icon: string }[] = [
   { key: "energy", label: "Energy", icon: "⚡" },
   { key: "grooming", label: "Grooming", icon: "✂️" },
@@ -27,16 +23,23 @@ const traitStats: { key: keyof Breed; label: string; icon: string }[] = [
 
 const AUTO_ADVANCE_MS = 6000;
 
-export function BreedShowcase() {
+export function BreedShowcase({ breeds }: { breeds: Breed[] }) {
+  const showcaseBreeds = useMemo(() => {
+    const picked = SHOWCASE_BREED_IDS.map((id) =>
+      breeds.find((breed) => breed.id === id),
+    ).filter((breed): breed is Breed => Boolean(breed));
+    // Fall back to the first few breeds if the curated ids aren't in the data.
+    return picked.length > 0 ? picked : breeds.slice(0, 8);
+  }, [breeds]);
+
   const [index, setIndex] = useState(0);
   const [isHoverPaused, setIsHoverPaused] = useState(false);
   const [isManuallyPaused, setIsManuallyPaused] = useState(false);
   const isPaused = isHoverPaused || isManuallyPaused;
   const total = showcaseBreeds.length;
-  const breed = showcaseBreeds[index];
 
   useEffect(() => {
-    if (isPaused) return;
+    if (isPaused || total === 0) return;
     const timer = setInterval(() => {
       setIndex((current) => (current + 1) % total);
     }, AUTO_ADVANCE_MS);
@@ -46,6 +49,10 @@ export function BreedShowcase() {
   function goTo(nextIndex: number) {
     setIndex(((nextIndex % total) + total) % total);
   }
+
+  if (total === 0) return null;
+
+  const breed = showcaseBreeds[index] ?? showcaseBreeds[0];
 
   return (
     <section

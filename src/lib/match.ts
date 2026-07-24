@@ -1,4 +1,4 @@
-import { Breed, breeds } from "./breeds";
+import { Breed } from "./breeds";
 import { QuizOption, Trait } from "./questions";
 
 const SIZE_MISMATCH_PENALTY = 5;
@@ -8,7 +8,10 @@ export interface MatchResult {
   matchPercent: number;
 }
 
-export function matchBreeds(answers: QuizOption[]): MatchResult[] {
+export function matchBreeds(
+  answers: QuizOption[],
+  breeds: Breed[],
+): MatchResult[] {
   let maxPossiblePenalty = 0;
   const sizePreferences = new Set<string>();
 

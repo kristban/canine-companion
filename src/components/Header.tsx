@@ -31,7 +31,16 @@ export function Header({ onLogoClick, onStart }: HeaderProps) {
             Canine Companion
           </span>
         </button>
-        <nav aria-label="Primary" className="hidden sm:block">
+        <nav
+          aria-label="Primary"
+          className="hidden items-center gap-6 sm:flex"
+        >
+          <Link
+            href="/breeds"
+            className="transition-smooth text-sm font-bold text-text hover:text-primary"
+          >
+            Breeds
+          </Link>
           <Link
             href="#signup-heading"
             className="transition-smooth text-sm font-bold text-text hover:text-primary"

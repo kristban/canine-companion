@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState, type FormEvent } from "react";
+import { subscribeToNewsletter } from "@/lib/newsletter";
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -13,6 +14,8 @@ export function SignupForm() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [errors, setErrors] = useState<FormErrors>({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitFailed, setSubmitFailed] = useState(false);
   const [toastVisible, setToastVisible] = useState(false);
   const toastTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -35,12 +38,28 @@ export function SignupForm() {
     return nextErrors;
   }
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const nextErrors = validate();
     setErrors(nextErrors);
     if (Object.keys(nextErrors).length > 0) return;
 
+    setIsSubmitting(true);
+    setSubmitFailed(false);
+
+    const result = await subscribeToNewsletter({
+      name: name.trim(),
+      email: email.trim(),
+    });
+
+    setIsSubmitting(false);
+
+    if (result === "error") {
+      setSubmitFailed(true);
+      return;
+    }
+
+    // "ok" and "duplicate" are both a success from the visitor's perspective.
     setName("");
     setEmail("");
     setToastVisible(true);
@@ -67,6 +86,7 @@ export function SignupForm() {
         <form
           onSubmit={handleSubmit}
           noValidate
+          aria-busy={isSubmitting}
           className="mt-8 flex flex-col gap-4 rounded-3xl border-3 border-border bg-surface p-6 text-left shadow-hard sm:p-8"
         >
           <div>
@@ -133,10 +153,20 @@ export function SignupForm() {
 
           <button
             type="submit"
-            className="transition-smooth mt-2 self-center rounded-full border-2 border-border bg-primary px-8 py-3 text-base font-bold text-white shadow-hard-sm hover:-translate-y-0.5 hover:shadow-hard focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+            disabled={isSubmitting}
+            className="transition-smooth mt-2 self-center rounded-full border-2 border-border bg-primary px-8 py-3 text-base font-bold text-white shadow-hard-sm hover:-translate-y-0.5 hover:shadow-hard focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:cursor-not-allowed disabled:opacity-70 disabled:hover:translate-y-0 disabled:hover:shadow-hard-sm"
           >
-            Sign up
+            {isSubmitting ? "Signing up…" : "Sign up"}
           </button>
+
+          {submitFailed && (
+            <p
+              role="alert"
+              className="text-center text-sm font-semibold text-red-600"
+            >
+              Something went wrong. Please try again.
+            </p>
+          )}
         </form>
       </div>
 

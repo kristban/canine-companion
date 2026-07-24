@@ -1,7 +1,9 @@
 # Architecture
 
 Canine Companion is a single-product Next.js App Router site: a dog-breed-matching
-quiz. There is no backend — see `conventions.md` for what that means in practice.
+quiz. Supabase is the backend: it stores newsletter signups and serves the
+breed catalog (the quiz itself runs entirely in the browser). See
+`conventions.md` for what that means in practice.
 
 ## Two navigation models coexist
 
@@ -13,9 +15,12 @@ React state — nothing is persisted, so a refresh resets progress.
 
 **2. Everything else is a real route with its own page chrome.**
 `/privacy`, `/cookies`, `/terms` (all rendered through the shared `LegalPage`
-layout component) and the 404 page (`src/app/not-found.tsx`) are independent
-routes. They are *not* part of `AppShell` — each renders its own `<Header />`
-and `<Footer />` directly.
+layout component), the `/breeds` gallery, and the 404 page
+(`src/app/not-found.tsx`) are independent routes. They are *not* part of
+`AppShell` — each renders its own `<Header />` and `<Footer />` directly.
+(`/breeds` and the 404 page are hand-rolled rather than routed through
+`LegalPage`, because their content isn't legal prose — see the Header gotcha
+below.)
 
 ## The Header gotcha
 
@@ -29,9 +34,11 @@ and `<Footer />` directly.
 
 This two-path setup is easy to break silently (it already caused a real bug:
 "Start the quiz" from a legal page just opened the homepage instead of the
-quiz). **When adding a new standalone page, reuse the `LegalPage` wrapper —
-don't hand-roll a page that renders `Header` outside of `AppShell` without
-accounting for this fallback.**
+quiz). **When adding a new standalone page, prefer the `LegalPage` wrapper. If
+its legal-prose layout doesn't fit (as with the `/breeds` gallery and the 404
+page), hand-roll the chrome the way they do — render `<Header />` with no props
+so the `/?start=quiz` fallback keeps working. Never render `Header` outside of
+`AppShell` without accounting for this fallback.**
 
 ## Anchor links across pages
 
@@ -52,7 +59,7 @@ homepage-only or global, and match the `href` style above.
 
 ```
 RootLayout (src/app/layout.tsx)
-├── "/" → AppShell (client, owns view state)
+├── "/" → page.tsx (server: getBreeds) → AppShell (client, owns view state)
 │   ├── Header
 │   ├── Landing | Quiz | Results   (one at a time, by view state)
 │   ├── SignupForm
@@ -60,6 +67,11 @@ RootLayout (src/app/layout.tsx)
 ├── "/privacy" | "/cookies" | "/terms" → LegalPage
 │   ├── Header
 │   ├── (page-specific content)
+│   ├── SignupForm
+│   └── Footer
+├── "/breeds" → BreedsPage (server: getBreeds; hand-rolled, like LegalPage)
+│   ├── Header
+│   ├── (breed card grid)
 │   ├── SignupForm
 │   └── Footer
 ├── not-found (404) → same shape as LegalPage, hand-rolled

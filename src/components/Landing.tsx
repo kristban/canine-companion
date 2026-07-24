@@ -1,12 +1,14 @@
 import Image from "next/image";
 import { HowItWorks } from "./HowItWorks";
 import { BreedShowcase } from "./BreedShowcase";
+import { Breed } from "@/lib/breeds";
 
 interface LandingProps {
   onStart: () => void;
+  breeds: Breed[];
 }
 
-export function Landing({ onStart }: LandingProps) {
+export function Landing({ onStart, breeds }: LandingProps) {
   return (
     <div className="flex flex-1 flex-col">
       <section className="w-full bg-grid-pattern bg-background">
@@ -58,7 +60,7 @@ export function Landing({ onStart }: LandingProps) {
       </section>
 
       <HowItWorks />
-      <BreedShowcase />
+      <BreedShowcase breeds={breeds} />
     </div>
   );
 }

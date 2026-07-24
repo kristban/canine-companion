@@ -1,20 +1,33 @@
 # Data & matching logic
 
-All quiz/breed logic lives in `src/lib/` and is pure data + pure functions —
-no fetching, no backend. Everything is computed client-side at quiz-completion
-time in `AppShell.handleComplete`.
+The quiz and matching logic in `src/lib/` is pure data + pure functions. The
+breed catalog loads from the Supabase `breeds` table via `getBreeds()`
+(`src/lib/getBreeds.ts`) — the single source of truth, with no bundled data; if
+Supabase isn't configured or reachable it returns an empty list and the UI
+shows an empty state (see below). The newsletter signup also writes to Supabase
+(see the end of this file). Matching itself still runs client-side at
+quiz-completion time in `AppShell.handleComplete`, over the breeds passed down
+as props.
 
 ## `src/lib/breeds.ts`
 
-`Breed` is a static list (~19 breeds). Every breed scores 12 traits on a 1–5
-scale (1 = very low, 5 = very high): `energy`, `grooming`, `trainability`,
-`goodWithKids`, `goodWithOtherPets`, `apartmentFriendly`, `independence`,
-`noviceFriendly`, `vocal`, `runningPartner`, `heatTolerance`, `coldTolerance`.
-Each breed also has a `size: "small" | "medium" | "large"`.
+`breeds.ts` now defines only the `Breed` type — there is no bundled breed data.
+`getBreeds()` (`src/lib/getBreeds.ts`) loads the catalog from the Supabase
+`breeds` table at request time and maps its snake_case columns
+(`good_with_kids`) to the camelCase `Breed` shape (`goodWithKids`). Supabase is
+the single source of truth; if it isn't configured or is unreachable,
+`getBreeds()` returns an empty array and the UI shows an empty state.
 
-**To add a breed:** add an entry to the `breeds` array with all 12 trait
-fields plus `id`, `name`, `emoji`, `tagline`, `description`, `size`. There's
-no validation — a missing field is a silent `undefined` in scoring.
+Every breed scores 12 traits on a 1–5 scale (1 = very low, 5 = very high):
+`energy`, `grooming`, `trainability`, `goodWithKids`, `goodWithOtherPets`,
+`apartmentFriendly`, `independence`, `noviceFriendly`, `vocal`,
+`runningPartner`, `heatTolerance`, `coldTolerance`. Each breed also has a
+`size: "small" | "medium" | "large"`.
+
+**To add a breed:** insert a row into the Supabase `breeds` table with all 12
+trait fields plus `id`, `name`, `emoji`, `tagline`, `description`, `size`. The
+table enforces the 1–5 range and required fields via check/not-null constraints
+(see `supabase/schema.sql`).
 
 ## `src/lib/questions.ts`
 
@@ -44,12 +57,14 @@ The size question is special: options set `sizePreference: Size[]` instead of
 rather than a per-trait one.
 
 **To add a question:** append to `questions`, give each option realistic
-`contributions` using existing `Trait` names — no new trait can be introduced
-without also adding it to every breed in `breeds.ts`.
+`contributions` using existing `Trait` names. Introducing a *new* trait means
+adding a column to the Supabase `breeds` table (and `supabase/schema.sql`),
+mapping it in `getBreeds`, and adding it to the `Breed` type in `breeds.ts`.
 
 ## `src/lib/match.ts`
 
-`matchBreeds(answers)`:
+`matchBreeds(answers, breeds)` — the breed list is loaded via `getBreeds()`,
+threaded through props, and passed in as the second argument:
 
 1. Sums `weight * 4` (max possible per-contribution penalty) across every
    answered contribution to get `maxPossiblePenalty`, plus a flat
@@ -62,3 +77,24 @@ without also adding it to every breed in `breeds.ts`.
 4. Returns all breeds sorted by `matchPercent` descending.
 
 `Results.tsx` shows the top 5. There's no tie-breaking beyond stable array sort.
+
+## `newsletter_subscribers` (Supabase) — the one exception to "no backend"
+
+The newsletter form is the only feature that persists data server-side.
+`SignupForm` calls `subscribeToNewsletter` in `src/lib/newsletter.ts`, which
+`POST`s `{ name, email }` to the Supabase `newsletter_subscribers` table via
+its REST endpoint (a plain `fetch`, no `@supabase/supabase-js`).
+
+- **Schema + row-level security:** `supabase/schema.sql`. Columns: `id` (uuid),
+  `name`, `email` (`citext`, unique/case-insensitive), `status`, `created_at`.
+- **RLS:** anonymous **INSERT** only. The client can add a signup but cannot
+  read, update, or delete rows, so the list can't be scraped with the public
+  anon key. The insert therefore uses `Prefer: return=minimal` (no read-back).
+- **Duplicate emails:** the unique constraint makes PostgREST return HTTP 409;
+  `subscribeToNewsletter` maps that to `"duplicate"`, which the form treats as a
+  successful signup (no email-enumeration leak).
+- **Config:** `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+  (see `.env.example`).
+
+Quiz answers, results, and the breed catalog are **not** stored here — they
+remain static/client-side as described above.

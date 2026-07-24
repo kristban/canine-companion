@@ -18,14 +18,30 @@
   the `<Header>`/`<Footer>` wiring again (see `docs/architecture.md` for why
   this matters for the "Start the quiz" button specifically).
 
-## No backend — this is deliberate
+## Backend: Supabase (newsletter + breeds)
 
-There is no database, no API routes, no email service, and no persistence
-beyond `localStorage` (used only for the cookie-consent choice). The
-newsletter form (`SignupForm`) does client-side-only validation and simulates
-success — it does not send data anywhere. Don't add persistence, API calls,
-or "wire this up for real" unless explicitly asked; treat the current
-behavior as an intentional scope boundary, not an unfinished stub.
+Two features talk to Supabase; everything else stays client-side.
+
+- **Newsletter:** the form (`SignupForm`) inserts the subscriber's name + email
+  into the `newsletter_subscribers` table via `subscribeToNewsletter` in
+  `src/lib/newsletter.ts` (a direct REST call — no client library).
+- **Breeds:** `getBreeds()` in `src/lib/getBreeds.ts` reads the breed catalog
+  from the Supabase `breeds` table — the single source of truth, with no
+  bundled data. If Supabase isn't configured or is unreachable it returns an
+  empty list and the pages show an empty state. Breeds are fetched in Server
+  Components (`src/app/page.tsx`, `src/app/breeds/page.tsx`) and passed down as
+  props — client components never fetch them.
+
+Both need `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY` (see
+`.env.example`); the tables + row-level security live in `supabase/schema.sql`,
+and the data model is documented in `docs/data-model.md`.
+
+Everything else stays deliberately backend-free: no API routes, no email
+service, and no persistence beyond `localStorage` (the cookie-consent choice).
+Quiz answers and match results are computed and kept entirely in the browser
+and are never sent anywhere — keep it that way. Don't add further persistence
+or API calls unless explicitly asked; treat this as an intentional scope
+boundary, not an unfinished stub.
 
 ## Assets
 

@@ -1,5 +1,7 @@
 import { AppShell } from "@/components/AppShell";
+import { getBreeds } from "@/lib/getBreeds";
 
-export default function Home() {
-  return <AppShell />;
+export default async function Home() {
+  const breeds = await getBreeds();
+  return <AppShell breeds={breeds} />;
 }
