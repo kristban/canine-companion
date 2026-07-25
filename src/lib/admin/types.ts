@@ -6,6 +6,12 @@
 // the server-only data layer. Keep it that way — do not import the Supabase
 // data helpers here.
 
+// The breed-group taxonomy is a single source of truth in the public domain
+// module (pure types + plain data, safe to import here). Re-exported so admin
+// components can pull it from this one module alongside the other admin types.
+import { BREED_GROUPS, type BreedGroup } from "@/lib/breeds";
+export { BREED_GROUPS, type BreedGroup };
+
 export type Size = "small" | "medium" | "large";
 
 export const SIZES: readonly Size[] = ["small", "medium", "large"];
@@ -28,6 +34,7 @@ export interface AdminBreed {
   tagline: string;
   description: string;
   size: Size;
+  group: BreedGroup;
   energy: number;
   grooming: number;
   trainability: number;

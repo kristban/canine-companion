@@ -8,6 +8,7 @@ interface BreedRow {
   tagline: string;
   description: string;
   size: Breed["size"];
+  breed_group: Breed["group"];
   energy: number;
   grooming: number;
   trainability: number;
@@ -33,6 +34,7 @@ function mapRow(row: BreedRow): Breed {
     tagline: row.tagline,
     description: row.description,
     size: row.size,
+    group: row.breed_group,
     energy: row.energy,
     grooming: row.grooming,
     trainability: row.trainability,

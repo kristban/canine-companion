@@ -11,23 +11,32 @@ as props.
 
 ## `src/lib/breeds.ts`
 
-`breeds.ts` now defines only the `Breed` type — there is no bundled breed data.
-`getBreeds()` (`src/lib/getBreeds.ts`) loads the catalog from the Supabase
-`breeds` table at request time and maps its snake_case columns
-(`good_with_kids`) to the camelCase `Breed` shape (`goodWithKids`). Supabase is
-the single source of truth; if it isn't configured or is unreachable,
-`getBreeds()` returns an empty array and the UI shows an empty state.
+`breeds.ts` defines the `Breed` type plus the group taxonomy (`BreedGroup`,
+`BREED_GROUPS`) — there is no bundled breed data. `getBreeds()`
+(`src/lib/getBreeds.ts`) loads the catalog from the Supabase `breeds` table at
+request time and maps its snake_case columns (`good_with_kids`, `breed_group`)
+to the camelCase `Breed` shape (`goodWithKids`, `group`). Supabase is the single
+source of truth; if it isn't configured or is unreachable, `getBreeds()` returns
+an empty array and the UI shows an empty state.
 
 Every breed scores 12 traits on a 1–5 scale (1 = very low, 5 = very high):
 `energy`, `grooming`, `trainability`, `goodWithKids`, `goodWithOtherPets`,
 `apartmentFriendly`, `independence`, `noviceFriendly`, `vocal`,
 `runningPartner`, `heatTolerance`, `coldTolerance`. Each breed also has a
-`size: "small" | "medium" | "large"`.
+`size: "small" | "medium" | "large"` and a `group` (one of `sporting`, `hound`,
+`working`, `terrier`, `herding`, `toy`, `companion`).
+
+`group` is a **browsing/organisation aid only** — it groups the `/breeds`
+gallery and gives the admin table a filter. It is deliberately **not** used by
+the matcher (`match.ts`), which scores the numeric traits + size directly; a
+group is just a fuzzy proxy for traits we already measure precisely. The
+group order + user-facing labels/blurbs live in `BREED_GROUPS` in `breeds.ts`
+(the single source of truth, re-exported through `src/lib/admin/types.ts`).
 
 **To add a breed:** insert a row into the Supabase `breeds` table with all 12
-trait fields plus `id`, `name`, `emoji`, `tagline`, `description`, `size`. The
-table enforces the 1–5 range and required fields via check/not-null constraints
-(see `supabase/schema.sql`).
+trait fields plus `id`, `name`, `emoji`, `tagline`, `description`, `size`, and
+`breed_group`. The table enforces the 1–5 range, the allowed size/group values,
+and required fields via check/not-null constraints (see `supabase/schema.sql`).
 
 ## `src/lib/questions.ts`
 

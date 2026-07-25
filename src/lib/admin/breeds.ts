@@ -14,6 +14,8 @@ import {
 } from "./http";
 import {
   type AdminBreed,
+  type BreedGroup,
+  BREED_GROUPS,
   type Size,
   SIZES,
   type TraitKey,
@@ -30,6 +32,7 @@ interface BreedRow {
   tagline: string;
   description: string;
   size: Size;
+  breed_group: BreedGroup;
   energy: number;
   grooming: number;
   trainability: number;
@@ -71,6 +74,7 @@ function mapRow(row: BreedRow): AdminBreed {
     tagline: row.tagline,
     description: row.description,
     size: row.size,
+    group: row.breed_group,
     energy: row.energy,
     grooming: row.grooming,
     trainability: row.trainability,
@@ -164,6 +168,12 @@ export function validateBreed(formData: FormData): ValidationResult {
     errors.size = "Choose a size.";
   }
 
+  const groupRaw = formData.get("group");
+  const group = typeof groupRaw === "string" ? groupRaw : "";
+  if (!BREED_GROUPS.some((g) => g.value === (group as BreedGroup))) {
+    errors.group = "Choose a group.";
+  }
+
   const columns: Record<string, unknown> = {
     id,
     name,
@@ -171,6 +181,7 @@ export function validateBreed(formData: FormData): ValidationResult {
     tagline,
     description,
     size,
+    breed_group: group,
   };
 
   for (const { key, label } of TRAIT_FIELDS) {

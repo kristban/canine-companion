@@ -4,6 +4,7 @@ import { useActionState, useState } from "react";
 import Link from "next/link";
 import {
   type AdminBreed,
+  BREED_GROUPS,
   EMPTY_FORM_STATE,
   type FormState,
   SIZES,
@@ -24,6 +25,7 @@ type BreedValues = {
   tagline: string;
   description: string;
   size: string;
+  group: string;
 } & Record<TraitKey, string>;
 
 function toValues(breed: AdminBreed | null): BreedValues {
@@ -34,6 +36,7 @@ function toValues(breed: AdminBreed | null): BreedValues {
     tagline: breed?.tagline ?? "",
     description: breed?.description ?? "",
     size: breed?.size ?? "medium",
+    group: breed?.group ?? BREED_GROUPS[0].value,
   } as BreedValues;
   for (const { key } of TRAIT_FIELDS) {
     values[key] = breed ? String(breed[key]) : "3";
@@ -104,15 +107,30 @@ export function BreedForm({ action, breed, mode }: BreedFormProps) {
             error={err("emoji")}
           />
         </div>
-        <SelectField
-          id="breed-size"
-          name="size"
-          label="Size"
-          value={values.size}
-          onChange={set("size")}
-          error={err("size")}
-          options={SIZES.map((size) => ({ value: size, label: size }))}
-        />
+        <div className="grid gap-5 sm:grid-cols-2">
+          <SelectField
+            id="breed-size"
+            name="size"
+            label="Size"
+            value={values.size}
+            onChange={set("size")}
+            error={err("size")}
+            options={SIZES.map((size) => ({ value: size, label: size }))}
+          />
+          <SelectField
+            id="breed-group"
+            name="group"
+            label="Group"
+            value={values.group}
+            onChange={set("group")}
+            error={err("group")}
+            hint="What the breed was bred to do. Used to group the catalog, not for matching."
+            options={BREED_GROUPS.map((g) => ({
+              value: g.value,
+              label: g.label,
+            }))}
+          />
+        </div>
       </fieldset>
 
       <fieldset className="flex flex-col gap-5 rounded-3xl border-3 border-border bg-surface p-6 shadow-hard-sm sm:p-8">

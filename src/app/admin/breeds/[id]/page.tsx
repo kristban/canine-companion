@@ -1,7 +1,7 @@
 import { getBreed } from "@/lib/admin/breeds";
 import { deleteBreed } from "@/lib/admin/actions";
 import { isAdminConfigured } from "@/lib/admin/http";
-import { TRAIT_FIELDS } from "@/lib/admin/types";
+import { BREED_GROUPS, TRAIT_FIELDS } from "@/lib/admin/types";
 import { AdminNotice } from "@/components/admin/AdminNotice";
 import { DeleteButton } from "@/components/admin/DeleteButton";
 import { AdminPageHeading, ButtonLink, ConfigNotice } from "@/components/admin/ui";
@@ -95,6 +95,15 @@ export default async function BreedDetailPage({
               Size
             </dt>
             <dd className="mt-1 capitalize text-text">{breed.size}</dd>
+          </div>
+          <div>
+            <dt className="text-xs font-extrabold uppercase tracking-wide text-muted">
+              Group
+            </dt>
+            <dd className="mt-1 text-text">
+              {BREED_GROUPS.find((g) => g.value === breed.group)?.label ??
+                breed.group}
+            </dd>
           </div>
           <div className="sm:col-span-2">
             <dt className="text-xs font-extrabold uppercase tracking-wide text-muted">

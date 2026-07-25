@@ -1,8 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { type AdminBreed, SIZES } from "@/lib/admin/types";
+import { type AdminBreed, BREED_GROUPS, SIZES } from "@/lib/admin/types";
 import { type Column, FilterableTable } from "./FilterableTable";
+
+const GROUP_LABEL = new Map(BREED_GROUPS.map((g) => [g.value, g.label]));
 
 const capitalize = (value: string) => value.charAt(0).toUpperCase() + value.slice(1);
 
@@ -43,6 +45,22 @@ const COLUMNS: Column<AdminBreed>[] = [
     },
     filterLabel: "Filter by size",
     cell: (breed) => <span className="capitalize text-muted">{breed.size}</span>,
+  },
+  {
+    id: "group",
+    header: "Group",
+    filter: {
+      kind: "select",
+      accessor: (breed) => breed.group,
+      allLabel: "All groups",
+      options: BREED_GROUPS.map((g) => ({ value: g.value, label: g.label })),
+    },
+    filterLabel: "Filter by group",
+    cell: (breed) => (
+      <span className="text-muted">
+        {GROUP_LABEL.get(breed.group) ?? breed.group}
+      </span>
+    ),
   },
   {
     id: "actions",
