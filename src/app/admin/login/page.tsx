@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { AdminNotice } from "@/components/admin/AdminNotice";
 import { isAuthConfigured } from "@/lib/supabase/server";
 import { signInWithGoogle } from "@/lib/auth/actions";
@@ -31,6 +32,14 @@ export default async function AdminLoginPage({
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-background bg-grid-pattern px-4 py-16">
+      <div className="w-full max-w-md">
+        <Link
+          href="/"
+          className="transition-smooth mb-4 inline-block text-sm font-bold text-muted hover:text-primary"
+        >
+          ← Back to Canine Companion
+        </Link>
+      </div>
       <div className="w-full max-w-md rounded-3xl border-3 border-border bg-surface p-8 shadow-hard sm:p-10">
         <div className="mb-6 flex items-center gap-2.5">
           <span
