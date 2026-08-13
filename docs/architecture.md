@@ -15,12 +15,13 @@ React state — nothing is persisted, so a refresh resets progress.
 
 **2. Everything else is a real route with its own page chrome.**
 `/privacy`, `/cookies`, `/terms` (all rendered through the shared `LegalPage`
-layout component), the `/breeds` gallery, and the 404 page
+layout component), the `/breeds` gallery, the `/guides` articles section
+(listing page + `/guides/[slug]` article pages), and the 404 page
 (`src/app/not-found.tsx`) are independent routes. They are *not* part of
 `AppShell` — each renders its own `<Header />` and `<Footer />` directly.
-(`/breeds` and the 404 page are hand-rolled rather than routed through
-`LegalPage`, because their content isn't legal prose — see the Header gotcha
-below.)
+(`/breeds`, `/guides`, and the 404 page are hand-rolled rather than routed
+through `LegalPage`, because their content isn't legal prose — see the Header
+gotcha below.)
 
 ## The Header gotcha
 
@@ -74,9 +75,37 @@ RootLayout (src/app/layout.tsx)
 │   ├── (breed card grid)
 │   ├── SignupForm
 │   └── Footer
+├── "/guides" → GuidesPage (server; hand-rolled, like BreedsPage)
+│   ├── Header
+│   ├── (article cards, grouped by category)
+│   ├── SignupForm
+│   └── Footer
+├── "/guides/[slug]" → ArticlePage (server; hand-rolled, like GuidesPage)
+│   ├── Header
+│   ├── (article header + dynamically-imported .mdx body)
+│   ├── SignupForm
+│   └── Footer
 ├── not-found (404) → same shape as LegalPage, hand-rolled
 └── CookieConsent (rendered globally in RootLayout, outside AppShell)
 ```
+
+### The `/guides/[slug]` MDX pipeline
+
+Article bodies are `.mdx` files in `src/content/advice/`, not routes under
+`src/app/` — `src/app/guides/[slug]/page.tsx` dynamically imports the file
+matching the requested slug (`import(`@/content/advice/${slug}.mdx`)`), the
+pattern Next.js's own MDX guide documents for content collections
+(`node_modules/next/dist/docs/01-app/02-guides/mdx.md`). `generateStaticParams`
++ `dynamicParams = false` mean only slugs already listed in
+`src/lib/articles.ts` resolve; anything else 404s before the import is even
+attempted.
+
+`@next/mdx` (configured in `next.config.ts`) enables the `.mdx` import itself;
+it does **not** parse YAML frontmatter, which is why each article's metadata
+is a plain `export const metadata = {...}` object at the top of the file
+instead. `src/mdx-components.tsx` maps markdown output (headings, tables,
+blockquotes, links, lists) to the site's design-system tokens — see
+`docs/conventions.md` for how to add a new article.
 
 ## Admin authentication (Google sign-in gate)
 

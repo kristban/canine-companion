@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { HowItWorks } from "./HowItWorks";
 import { BreedShowcase } from "./BreedShowcase";
+import { GuidesPreview } from "./GuidesPreview";
 import { Breed } from "@/lib/breeds";
 
 interface LandingProps {
@@ -61,6 +62,7 @@ export function Landing({ onStart, breeds }: LandingProps) {
 
       <HowItWorks />
       <BreedShowcase breeds={breeds} />
+      <GuidesPreview />
     </div>
   );
 }

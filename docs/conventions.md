@@ -10,7 +10,8 @@
   `CookieConsent`, `SignupForm` — each needs local state, `useRouter`, or a
   browser-only API (`localStorage`, `setInterval`, etc.). Everything else
   (`Footer`, `Landing`, `HowItWorks`, `BreedCard`, `AnswersRecap`,
-  `LegalPage`, `Results`) is a plain server component. Before adding
+  `LegalPage`, `Results`, `ArticleCard`, `GuidesPreview`) is a plain server
+  component. Before adding
   `"use client"` to something, check whether the interactivity can live in a
   smaller child component instead of the whole tree.
 - Reuse the shared `LegalPage` layout component for any new static/standalone
@@ -52,6 +53,27 @@ results are computed and kept entirely in the browser and are never sent
 anywhere for anonymous visitors — keep it that way. Don't add *further*
 persistence or API calls unless explicitly asked; treat this as an intentional
 scope boundary, not an unfinished stub.
+
+The `/guides` articles ("Paws & Pointers") section follows the same boundary:
+articles are `.mdx` files in `src/content/advice/` plus a matching entry in
+`src/lib/articles.ts`, not a Supabase table, since it's editorial content
+rather than user data. **To publish a new article:**
+
+1. Add `src/content/advice/<slug>.mdx`, starting with `export const metadata
+   = { title, slug, description, category, tags, readingTime, date }` (a
+   plain JS object, not YAML frontmatter — `@next/mdx` doesn't parse
+   frontmatter, see `docs/architecture.md`). The body is markdown/MDX
+   (`remark-gfm` is enabled, so tables and other GFM syntax work); heading
+   levels start at `##`, since the page shell renders the `<h1>` from
+   `metadata.title`.
+2. Add a matching entry to the `articles` array in `src/lib/articles.ts`
+   (`id` = the slug/filename). This is the single source of truth the
+   listing page, the homepage teaser, and `generateStaticParams` all read
+   from — the `.mdx` file is only ever dynamically imported by
+   `src/app/guides/[slug]/page.tsx` once that id is known to exist.
+
+If this ever needs `/admin`-style management, that's a deliberate follow-up,
+not a default.
 
 ## Assets
 

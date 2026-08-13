@@ -44,6 +44,12 @@ export function Header({ onLogoClick, onStart }: HeaderProps) {
               Breeds
             </Link>
             <Link
+              href="/guides"
+              className="transition-smooth text-sm font-bold text-text hover:text-primary"
+            >
+              Paws &amp; Pointers
+            </Link>
+            <Link
               href="#signup-heading"
               className="transition-smooth text-sm font-bold text-text hover:text-primary"
             >
