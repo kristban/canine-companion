@@ -10,6 +10,7 @@ import { SignupForm } from "./SignupForm";
 import { Breed } from "@/lib/breeds";
 import { QuizOption } from "@/lib/questions";
 import { matchBreeds, MatchResult } from "@/lib/match";
+import { clearPendingResults, readPendingResults } from "@/lib/results";
 
 type View = "landing" | "quiz" | "results";
 
@@ -22,6 +23,19 @@ export function AppShell({ breeds }: { breeds: Breed[] }) {
     const params = new URLSearchParams(window.location.search);
     if (params.get("start") === "quiz") {
       setView("quiz");
+      window.history.replaceState(null, "", "/");
+      return;
+    }
+    // Returning from Google sign-in mid-save: restore the results the visitor
+    // stashed before the redirect so they can finish saving them.
+    if (params.get("savePending") === "1") {
+      const pending = readPendingResults();
+      if (pending) {
+        setAnswers(pending.answers);
+        setResults(pending.results);
+        setView("results");
+      }
+      clearPendingResults();
       window.history.replaceState(null, "", "/");
     }
   }, []);

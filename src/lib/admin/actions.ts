@@ -9,6 +9,7 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { requireAdmin } from "@/lib/auth/requireAdmin";
 import type { DeleteState, FormState } from "./types";
 import {
   createBreedRow,
@@ -45,6 +46,8 @@ export async function createBreed(
   _prevState: FormState,
   formData: FormData,
 ): Promise<FormState> {
+  await requireAdmin();
+
   const validation = validateBreed(formData);
   if (!validation.ok) return { errors: validation.errors };
 
@@ -65,6 +68,8 @@ export async function updateBreed(
   _prevState: FormState,
   formData: FormData,
 ): Promise<FormState> {
+  await requireAdmin();
+
   const validation = validateBreed(formData);
   if (!validation.ok) return { errors: validation.errors };
 
@@ -79,6 +84,8 @@ export async function deleteBreed(
   _prevState: DeleteState,
   formData: FormData,
 ): Promise<DeleteState> {
+  await requireAdmin();
+
   const id = String(formData.get("id") ?? "");
   if (!id) return { error: "Missing breed id." };
 
@@ -98,6 +105,8 @@ export async function createSubscriber(
   _prevState: FormState,
   formData: FormData,
 ): Promise<FormState> {
+  await requireAdmin();
+
   const validation = validateSubscriber(formData);
   if (!validation.ok) return { errors: validation.errors };
 
@@ -118,6 +127,8 @@ export async function updateSubscriber(
   _prevState: FormState,
   formData: FormData,
 ): Promise<FormState> {
+  await requireAdmin();
+
   const validation = validateSubscriber(formData);
   if (!validation.ok) return { errors: validation.errors };
 
@@ -137,6 +148,8 @@ export async function deleteSubscriber(
   _prevState: DeleteState,
   formData: FormData,
 ): Promise<DeleteState> {
+  await requireAdmin();
+
   const id = String(formData.get("id") ?? "");
   if (!id) return { error: "Missing subscriber id." };
 

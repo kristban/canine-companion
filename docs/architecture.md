@@ -77,3 +77,65 @@ RootLayout (src/app/layout.tsx)
 ├── not-found (404) → same shape as LegalPage, hand-rolled
 └── CookieConsent (rendered globally in RootLayout, outside AppShell)
 ```
+
+## Admin authentication (Google sign-in gate)
+
+`/admin` is gated by **Google sign-in via Supabase Auth**, restricted to an
+email allowlist. Access is enforced at three layers (the service-role data
+layer bypasses RLS, so the DB can't be the boundary — the app is):
+
+1. **`src/proxy.ts`** — the Next.js 16 *proxy* (the renamed `middleware`
+   convention; `middleware.ts` no longer exists in Next 16, and proxy runs on
+   the Node.js runtime). Matches `/admin/:path*`, refreshes the Supabase session
+   cookie, and redirects anyone who isn't a signed-in allowlisted admin to
+   `/admin/login` — with `?error=not_allowed` when they *are* signed in but off
+   the allowlist, or `?redirectTo=…` when signed out (and sends already-signed-in
+   admins off the login page to `/admin`). This is the page-navigation gate.
+2. **`src/app/admin/(protected)/layout.tsx`** — calls `requireAdmin()` on render.
+   The protected admin pages live in the `(protected)` route group so this
+   guard can redirect without looping; the sibling `/admin/login` route is
+   *outside* the group (and so is the only `/admin/*` page the proxy lets
+   through unauthenticated). Route groups don't change URLs — everything is
+   still at `/admin/...`.
+3. **Every admin Server Action** (`src/lib/admin/actions.ts`) re-checks with
+   `await requireAdmin()`. This is **mandatory, not just defense-in-depth**: a
+   proxy `matcher` exclusion also skips the proxy for Server Action POSTs, so
+   the action must verify auth itself.
+
+Supporting pieces: `src/app/auth/callback/route.ts` (the **shared** OAuth
+callback — exchanges the code for a session and redirects to `next`; it does
+*not* enforce the allowlist, since admin is gated by the three layers above and
+ordinary public users must be allowed to hold a session), `src/lib/auth/
+requireAdmin.ts` (`getAdminUser()` / `requireAdmin()` — allowlist check layered
+on `getSessionUser()`), `src/lib/auth/allowlist.ts` (parses
+`ADMIN_ALLOWED_EMAILS`, fails closed), `src/lib/auth/actions.ts` (admin
+sign-in/out Server Actions), and `src/lib/supabase/server.ts` (the anon-key auth
+client + `getSessionUser` in `src/lib/auth/requireUser.ts`). Google's OAuth
+Client ID/Secret live in the Supabase dashboard, not in app env; the app needs
+the Supabase URL/anon key plus `ADMIN_ALLOWED_EMAILS`.
+
+## Public authentication (Google login for visitors)
+
+Separate from the admin gate: any visitor can sign in with Google. **The quiz is
+fully usable logged-out** — login is required only to *save* results. Auth here
+is a display/convenience layer, not a wall.
+
+- **`src/components/SessionProvider.tsx`** wraps the app in `RootLayout` and
+  holds the current user. It hydrates **client-side** (`getSession()` +
+  `onAuthStateChange`) via the browser client (`src/lib/supabase/client.ts`) —
+  deliberately *not* from a server cookie read, so the static pages (`/`,
+  `/breeds`, `/privacy`, …) stay static. `useSession()` exposes `{ user, loading }`.
+- **`src/components/AuthNav.tsx`** (in `Header`) is the nav control: logged out →
+  "Continue with Google"; logged in → a name-chip menu (My results, Account, Log
+  out). Sign-in/out run through the browser client.
+- **Per-user pages** `/account` and `/results` are real routes with hand-rolled
+  chrome; each calls `requireUser()` (`src/lib/auth/requireUser.ts`), which
+  redirects signed-out visitors to **`/login`** (the public, allowlist-free login
+  page). Data is read/written with the *user's* session under RLS — never the
+  service-role key.
+- **Save-across-redirect:** quiz results live only in `AppShell` React state.
+  When a signed-out user clicks "Save these results", the results are stashed in
+  `sessionStorage` (`src/lib/results.ts`) and OAuth returns to `/?savePending=1`;
+  `AppShell`'s mount effect rehydrates them so the save can complete. Signed-in,
+  the save inserts a snapshot into `saved_results` directly (see
+  `docs/data-model.md`).

@@ -2,6 +2,7 @@ import { MatchResult } from "@/lib/match";
 import { QuizOption } from "@/lib/questions";
 import { BreedCard } from "./BreedCard";
 import { AnswersRecap } from "./AnswersRecap";
+import { SaveResultsButton } from "./results/SaveResultsButton";
 
 interface ResultsProps {
   results: MatchResult[];
@@ -65,7 +66,8 @@ export function Results({ results, answers, onRestart }: ResultsProps) {
         ))}
       </div>
 
-      <div className="mt-10 flex justify-center">
+      <div className="mt-10 flex flex-col items-center gap-6">
+        <SaveResultsButton results={results} answers={answers} />
         <button
           type="button"
           onClick={onRestart}

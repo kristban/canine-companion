@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { AuthNav } from "./AuthNav";
 
 interface HeaderProps {
   onLogoClick?: () => void;
@@ -31,30 +32,34 @@ export function Header({ onLogoClick, onStart }: HeaderProps) {
             Canine Companion
           </span>
         </button>
-        <nav
-          aria-label="Primary"
-          className="hidden items-center gap-6 sm:flex"
-        >
-          <Link
-            href="/breeds"
-            className="transition-smooth text-sm font-bold text-text hover:text-primary"
+        <div className="flex items-center gap-3 sm:gap-5">
+          <nav
+            aria-label="Primary"
+            className="hidden items-center gap-6 sm:flex"
           >
-            Breeds
-          </Link>
-          <Link
-            href="#signup-heading"
-            className="transition-smooth text-sm font-bold text-text hover:text-primary"
+            <Link
+              href="/breeds"
+              className="transition-smooth text-sm font-bold text-text hover:text-primary"
+            >
+              Breeds
+            </Link>
+            <Link
+              href="#signup-heading"
+              className="transition-smooth text-sm font-bold text-text hover:text-primary"
+            >
+              Newsletter
+            </Link>
+          </nav>
+          <AuthNav />
+          <button
+            type="button"
+            onClick={handleStart}
+            className="transition-smooth rounded-full border-2 border-border bg-primary px-5 py-2.5 text-sm font-bold text-white shadow-hard-sm hover:-translate-y-0.5 hover:shadow-hard focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
           >
-            Newsletter
-          </Link>
-        </nav>
-        <button
-          type="button"
-          onClick={handleStart}
-          className="transition-smooth rounded-full border-2 border-border bg-primary px-5 py-2.5 text-sm font-bold text-white shadow-hard-sm hover:-translate-y-0.5 hover:shadow-hard focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
-        >
-          Start the quiz
-        </button>
+            <span className="hidden sm:inline">Start the quiz</span>
+            <span className="sm:hidden">Quiz</span>
+          </button>
+        </div>
       </div>
     </header>
   );

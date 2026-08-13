@@ -2,7 +2,6 @@ import Link from "next/link";
 import { countBreeds } from "@/lib/admin/breeds";
 import { isAdminConfigured } from "@/lib/admin/http";
 import { countSubscribers } from "@/lib/admin/subscribers";
-import { AdminNotice } from "@/components/admin/AdminNotice";
 import { AdminPageHeading, ConfigNotice } from "@/components/admin/ui";
 
 function CountCard({
@@ -57,19 +56,6 @@ export default async function AdminDashboardPage() {
         title="Dashboard"
         description="Manage the breed catalog and newsletter subscribers."
       />
-
-      <AdminNotice
-        variant="error"
-        icon="🔓"
-        title="No authentication — this area is unprotected"
-      >
-        <p>
-          Anyone who can reach <code className="rounded bg-red-100 px-1 py-0.5 font-mono text-[0.8em]">/admin</code> has full
-          read/write/delete access to the database. It is unlinked from the
-          public site, but that is not access control. Don&apos;t deploy this to
-          a public URL until authentication is added.
-        </p>
-      </AdminNotice>
 
       {!configured ? <ConfigNotice /> : null}
 

@@ -122,10 +122,53 @@ update public.breeds set breed_group = 'companion' where breed_group is null;
 alter table public.breeds alter column breed_group set not null;
 
 -- ---------------------------------------------------------------------------
+-- Table: saved_results  (per-user saved quiz results)
+-- Added when public Google login shipped. Signed-in users may save a snapshot
+-- of their quiz results; each user sees only their own rows. Unlike breeds /
+-- subscribers (service-role), this table is accessed with the USER's session,
+-- so RLS on auth.uid() is the whole security model. Quiz-taking itself stays
+-- anonymous — nothing is written here unless a signed-in user clicks Save.
+-- ---------------------------------------------------------------------------
+create table if not exists public.saved_results (
+  id         uuid        primary key default gen_random_uuid(),
+  user_id    uuid        not null default auth.uid()
+               references auth.users(id) on delete cascade,
+  title      text,
+  results    jsonb       not null,   -- top breeds: [{id,name,emoji,matchPercent}]
+  answers    jsonb,                  -- recap: [{question,label,icon}]
+  created_at timestamptz not null default now()
+);
+
+create index if not exists saved_results_user_id_idx
+  on public.saved_results (user_id, created_at desc);
+
+-- ---------------------------------------------------------------------------
+-- Table: profiles  (PUBLIC identity — readable by anyone)
+-- ---------------------------------------------------------------------------
+create table if not exists public.profiles (
+  id           uuid        primary key default auth.uid()
+                 references auth.users(id) on delete cascade,
+  username     citext      not null unique
+                 check (username ~ '^[a-z0-9_]{3,20}$'),
+  display_name text,
+  avatar_url   text,
+  bio          text,
+  created_at   timestamptz not null default now(),
+  updated_at   timestamptz not null default now()
+);
+
+drop trigger if exists profiles_set_updated_at on public.profiles;
+create trigger profiles_set_updated_at
+  before update on public.profiles
+  for each row execute function public.set_updated_at();
+
+-- ---------------------------------------------------------------------------
 -- Row Level Security
 -- ---------------------------------------------------------------------------
 alter table public.newsletter_subscribers enable row level security;
 alter table public.breeds                 enable row level security;
+alter table public.saved_results          enable row level security;
+alter table public.profiles               enable row level security;
 
 -- Table-level privileges. Supabase usually grants these to the anon /
 -- authenticated roles by default; we set them explicitly so this file is
@@ -133,6 +176,8 @@ alter table public.breeds                 enable row level security;
 -- visible or writable.
 grant insert on table public.newsletter_subscribers to anon, authenticated;
 grant select on table public.breeds                 to anon, authenticated;
+grant select on table public.profiles               to anon, authenticated;
+grant insert, update, delete on table public.profiles to authenticated;
 
 -- Newsletter: the public form may INSERT a signup, but the list is NOT
 -- readable/updatable/deletable with the anon key (no other policies), so it
@@ -154,6 +199,62 @@ create policy "Breeds are publicly readable"
   for select
   to anon, authenticated
   using (true);
+
+-- Saved results: a signed-in user may read, create, and delete ONLY their own
+-- rows. No update policy (results are immutable snapshots). auth.uid() = user_id
+-- is enforced on both read (using) and write (with check).
+grant select, insert, delete on table public.saved_results to authenticated;
+
+drop policy if exists "Users read own saved results" on public.saved_results;
+create policy "Users read own saved results"
+  on public.saved_results
+  for select
+  to authenticated
+  using (auth.uid() = user_id);
+
+drop policy if exists "Users insert own saved results" on public.saved_results;
+create policy "Users insert own saved results"
+  on public.saved_results
+  for insert
+  to authenticated
+  with check (auth.uid() = user_id);
+
+drop policy if exists "Users delete own saved results" on public.saved_results;
+create policy "Users delete own saved results"
+  on public.saved_results
+  for delete
+  to authenticated
+  using (auth.uid() = user_id);
+
+-- Profiles: anyone can read; only the owner can create/edit/delete their own.
+drop policy if exists "Profiles are publicly readable" on public.profiles;
+create policy "Profiles are publicly readable"
+  on public.profiles
+  for select
+  to anon, authenticated
+  using (true);
+
+drop policy if exists "Users create own profile" on public.profiles;
+create policy "Users create own profile"
+  on public.profiles
+  for insert
+  to authenticated
+  with check (auth.uid() = id);
+
+drop policy if exists "Users update own profile" on public.profiles;
+create policy "Users update own profile"
+  on public.profiles
+  for update
+  to authenticated
+  using (auth.uid() = id)
+  with check (auth.uid() = id);
+
+drop policy if exists "Users delete own profile" on public.profiles;
+create policy "Users delete own profile"
+  on public.profiles
+  for delete
+  to authenticated
+  using (auth.uid() = id);
 
 -- ---------------------------------------------------------------------------
 -- Seed: breeds (mirrors src/lib/breeds.ts). "do nothing" on conflict so that

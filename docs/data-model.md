@@ -105,5 +105,43 @@ its REST endpoint (a plain `fetch`, no `@supabase/supabase-js`).
 - **Config:** `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY`
   (see `.env.example`).
 
-Quiz answers, results, and the breed catalog are **not** stored here — they
-remain static/client-side as described above.
+## `saved_results` (Supabase) — opt-in, per-user, RLS-scoped
+
+When public Google login shipped, signed-in users gained the ability to **save**
+a quiz result set. This is the only per-user table, and unlike everything else
+it's accessed with the **user's own session** (anon key + RLS), never the
+service-role key.
+
+- **Schema + RLS:** `supabase/schema.sql`. Columns: `id` (uuid), `user_id` (uuid,
+  `references auth.users`, defaults to `auth.uid()`), `title`, `results` (jsonb —
+  top breeds `[{id,name,emoji,matchPercent}]`), `answers` (jsonb — recap
+  `[{question,label,icon}]`), `created_at`.
+- **RLS:** `select` / `insert` / `delete` policies all keyed on
+  `auth.uid() = user_id`, so a user can only ever see or touch their own rows. No
+  update policy — saved snapshots are immutable.
+- **Client code:** `src/lib/results.ts` builds the compact snapshot;
+  `SaveResultsButton` inserts via the browser client;
+  `src/app/results/page.tsx` reads them with the server client;
+  `SavedResultsList` deletes. Nothing here uses the service-role key.
+
+Taking the quiz still writes **nothing** — a snapshot is stored only when a
+signed-in user explicitly clicks Save. The breed catalog and the live quiz
+answers/results otherwise remain static/client-side as described above.
+
+## `profiles` (Supabase) — public identity
+
+A per-user table accessed with the **user's own session** (RLS, never
+service-role): `id` (uuid, PK, = `auth.uid()`), `username` (citext, unique,
+`^[a-z0-9_]{3,20}$`), `display_name`, `avatar_url`, `bio`, timestamps.
+
+- **RLS:** `select` is open to `anon` + `authenticated` (`using (true)`) —
+  anyone can read any profile. `insert` / `update` / `delete` are restricted to
+  the owner (`auth.uid() = id`).
+- **App UI:** editable from `/account` (`src/app/account/page.tsx`), which
+  server-fetches the caller's own row and renders `PublicProfileForm` (upserts
+  by `id`) alongside `AccountForm` (sign-in email only — display name lives on
+  the profile instead, and saving it there also syncs
+  `user_metadata.display_name` so the nav stays in sync without a separate
+  profile fetch). Types/constants live in `src/lib/profile.ts`. There's no
+  public profile *viewing* page (`/u/[username]`) yet — only the owner's own
+  edit view.

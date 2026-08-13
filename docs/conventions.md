@@ -20,7 +20,7 @@
 
 ## Backend: Supabase (newsletter + breeds)
 
-Two features talk to Supabase; everything else stays client-side.
+Three features talk to Supabase; everything else stays client-side.
 
 - **Newsletter:** the form (`SignupForm`) inserts the subscriber's name + email
   into the `newsletter_subscribers` table via `subscribeToNewsletter` in
@@ -31,17 +31,27 @@ Two features talk to Supabase; everything else stays client-side.
   empty list and the pages show an empty state. Breeds are fetched in Server
   Components (`src/app/page.tsx`, `src/app/breeds/page.tsx`) and passed down as
   props — client components never fetch them.
+- **Admin auth:** Google sign-in gating `/admin`, via Supabase Auth. This is the
+  **one deliberate exception** to the raw-fetch, no-client-library rule: it uses
+  `@supabase/ssr` (+ `@supabase/supabase-js`) because OAuth/PKCE + cookie
+  sessions are the "don't hand-roll security" case. The exception is scoped to
+  auth only (`src/lib/supabase/server.ts`, `src/lib/auth/**`, `src/proxy.ts`,
+  `src/app/auth/callback/`) — the newsletter and breeds data layers stay on raw
+  `fetch`. See `docs/architecture.md` → "Admin authentication" for the full
+  design. Needs `ADMIN_ALLOWED_EMAILS` in addition to the Supabase env vars.
 
 Both need `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY` (see
 `.env.example`); the tables + row-level security live in `supabase/schema.sql`,
 and the data model is documented in `docs/data-model.md`.
 
-Everything else stays deliberately backend-free: no API routes, no email
-service, and no persistence beyond `localStorage` (the cookie-consent choice).
-Quiz answers and match results are computed and kept entirely in the browser
-and are never sent anywhere — keep it that way. Don't add further persistence
-or API calls unless explicitly asked; treat this as an intentional scope
-boundary, not an unfinished stub.
+Beyond those, the site stays deliberately backend-free: no API routes and no
+email service. There is now **one authorized persistence exception**:
+signed-in users can save quiz results to the `saved_results` table (per-user,
+RLS-scoped — see `docs/data-model.md`). That aside, quiz answers and match
+results are computed and kept entirely in the browser and are never sent
+anywhere for anonymous visitors — keep it that way. Don't add *further*
+persistence or API calls unless explicitly asked; treat this as an intentional
+scope boundary, not an unfinished stub.
 
 ## Assets
 

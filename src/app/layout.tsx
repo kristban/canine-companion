@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Nunito, Fredoka } from "next/font/google";
 import { CookieConsent } from "@/components/CookieConsent";
+import { SessionProvider } from "@/components/SessionProvider";
 import "./globals.css";
 
 const nunito = Nunito({
@@ -31,8 +32,10 @@ export default function RootLayout({
       className={`${nunito.variable} ${fredoka.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-background text-text">
-        {children}
-        <CookieConsent />
+        <SessionProvider>
+          {children}
+          <CookieConsent />
+        </SessionProvider>
       </body>
     </html>
   );
