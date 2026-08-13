@@ -87,7 +87,21 @@ threaded through props, and passed in as the second argument:
    clamped to 0–100 and rounded.
 4. Returns all breeds sorted by `matchPercent` descending.
 
-`Results.tsx` shows the top 5. There's no tie-breaking beyond stable array sort.
+`Results.tsx` shows the top 5, plus (when the quiz produced a real spread of
+scores) the bottom 3 as "Probably not a fit". There's no tie-breaking beyond
+stable array sort.
+
+`explainMatch(breed, answers)` reuses the same per-contribution shortfall math
+to explain *why* a single breed scored the way it did — the top 2 traits it
+fit perfectly and the top 2 it fell short on (deduped by trait, weighted),
+as `{ good: string[]; bad: string[] }`. `summarizeGoodMatch` /
+`summarizePoorMatch` turn that into a one-sentence, plain-language summary for
+a top or bottom result respectively. Deliberately not computed inside
+`matchBreeds` (which runs for every breed in the catalog on every quiz
+completion) — call `explainMatch` only for the handful of breeds actually
+rendered. All plain-language phrasing lives in `TRAIT_REASON_PHRASES` in
+`match.ts`; no breed-level data is needed for this, since it's derived
+entirely from the same trait scores + quiz answers the matcher already uses.
 
 ## `newsletter_subscribers` (Supabase) — the one exception to "no backend"
 

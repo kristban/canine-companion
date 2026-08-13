@@ -3,26 +3,38 @@ import { MatchResult } from "@/lib/match";
 interface BreedCardProps {
   result: MatchResult;
   rank: number;
+  /** A short sentence explaining why this breed scored the way it did. */
+  reason?: string;
+  /** "avoid" mutes the styling for a breed that's probably not a fit. */
+  variant?: "match" | "avoid";
 }
 
 const RANK_BADGES = ["🥇", "🥈", "🥉"];
 const AVATAR_COLORS = ["bg-secondary", "bg-primary/30", "bg-accent/40"];
 
-export function BreedCard({ result, rank }: BreedCardProps) {
+export function BreedCard({
+  result,
+  rank,
+  reason,
+  variant = "match",
+}: BreedCardProps) {
   const { breed, matchPercent } = result;
+  const isAvoid = variant === "avoid";
 
   return (
     <article className="transition-smooth flex flex-col gap-4 rounded-3xl border-3 border-border bg-surface p-6 shadow-hard hover:-translate-y-1 sm:flex-row sm:items-center">
       <div className="flex items-center gap-4 sm:w-56 sm:flex-col sm:items-start sm:gap-2">
         <span
-          className={`flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl border-2 border-border ${AVATAR_COLORS[rank % AVATAR_COLORS.length]} text-4xl`}
+          className={`flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl border-2 border-border text-4xl ${isAvoid ? "bg-background-alt" : AVATAR_COLORS[rank % AVATAR_COLORS.length]}`}
           aria-hidden="true"
         >
           {breed.emoji}
         </span>
         <div>
-          <p className="text-xs font-extrabold uppercase tracking-wide text-primary">
-            {RANK_BADGES[rank] ?? `#${rank + 1}`} match
+          <p
+            className={`text-xs font-extrabold uppercase tracking-wide ${isAvoid ? "text-muted" : "text-primary"}`}
+          >
+            {isAvoid ? "Probably not a fit" : `${RANK_BADGES[rank] ?? `#${rank + 1}`} match`}
           </p>
           <h3 className="font-display text-xl font-semibold tracking-tight text-text">
             {breed.name}
@@ -41,11 +53,13 @@ export function BreedCard({ result, rank }: BreedCardProps) {
             aria-label={`${breed.name} match percentage`}
           >
             <div
-              className="h-full rounded-full bg-primary"
+              className={`h-full rounded-full ${isAvoid ? "bg-muted" : "bg-primary"}`}
               style={{ width: `${matchPercent}%` }}
             />
           </div>
-          <span className="text-sm font-extrabold text-primary">
+          <span
+            className={`text-sm font-extrabold ${isAvoid ? "text-muted" : "text-primary"}`}
+          >
             {matchPercent}%
           </span>
         </div>
@@ -53,6 +67,12 @@ export function BreedCard({ result, rank }: BreedCardProps) {
         <p className="mt-1 text-sm leading-relaxed text-muted">
           {breed.description}
         </p>
+        {reason && (
+          <p className="mt-2 text-sm leading-relaxed text-text">
+            <span aria-hidden="true">{isAvoid ? "🙅 " : "💡 "}</span>
+            {reason}
+          </p>
+        )}
       </div>
     </article>
   );

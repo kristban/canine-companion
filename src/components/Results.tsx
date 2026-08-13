@@ -1,4 +1,9 @@
-import { MatchResult } from "@/lib/match";
+import {
+  MatchResult,
+  explainMatch,
+  summarizeGoodMatch,
+  summarizePoorMatch,
+} from "@/lib/match";
 import { QuizOption } from "@/lib/questions";
 import { BreedCard } from "./BreedCard";
 import { AnswersRecap } from "./AnswersRecap";
@@ -12,6 +17,19 @@ interface ResultsProps {
 
 export function Results({ results, answers, onRestart }: ResultsProps) {
   const topResults = results.slice(0, 5);
+
+  // Only worth showing "probably not a fit" breeds when the quiz actually
+  // produced a spread of scores (e.g. not every question was skipped/"no
+  // preference", which would tie every breed at 100%) and there are breeds
+  // left over after the top 5 to draw from.
+  const hasVariance =
+    results.length > 0 &&
+    results[0].matchPercent !== results[results.length - 1].matchPercent;
+  const worstCount = hasVariance
+    ? Math.min(3, Math.max(0, results.length - topResults.length))
+    : 0;
+  const worstResults =
+    worstCount > 0 ? results.slice(-worstCount).reverse() : [];
 
   if (topResults.length === 0) {
     return (
@@ -62,9 +80,46 @@ export function Results({ results, answers, onRestart }: ResultsProps) {
 
       <div className="flex flex-col gap-4">
         {topResults.map((result, index) => (
-          <BreedCard key={result.breed.id} result={result} rank={index} />
+          <BreedCard
+            key={result.breed.id}
+            result={result}
+            rank={index}
+            reason={summarizeGoodMatch(
+              result.breed,
+              explainMatch(result.breed, answers),
+            )}
+          />
         ))}
       </div>
+
+      {worstResults.length > 0 && (
+        <section className="mt-12" aria-labelledby="poor-matches-heading">
+          <h2
+            id="poor-matches-heading"
+            className="font-display text-2xl font-semibold tracking-tight text-text"
+          >
+            Probably not a fit
+          </h2>
+          <p className="mt-1 text-muted">
+            These scored lowest against your answers — worth knowing before
+            you fall for the photos.
+          </p>
+          <div className="mt-4 flex flex-col gap-4">
+            {worstResults.map((result, index) => (
+              <BreedCard
+                key={result.breed.id}
+                result={result}
+                rank={index}
+                variant="avoid"
+                reason={summarizePoorMatch(
+                  result.breed,
+                  explainMatch(result.breed, answers),
+                )}
+              />
+            ))}
+          </div>
+        </section>
+      )}
 
       <div className="mt-10 flex flex-col items-center gap-6">
         <SaveResultsButton results={results} answers={answers} />
