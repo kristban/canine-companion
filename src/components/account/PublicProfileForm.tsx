@@ -13,6 +13,8 @@ import { PROFILES_TABLE, USERNAME_PATTERN, type Profile } from "@/lib/profile";
 interface PublicProfileFormProps {
   userId: string;
   initialProfile: Profile | null;
+  /** The Google profile picture, used to prefill the avatar field on first setup. */
+  googleAvatarUrl?: string | null;
 }
 
 type Message = { kind: "success" | "error"; text: string } | null;
@@ -20,12 +22,15 @@ type Message = { kind: "success" | "error"; text: string } | null;
 export function PublicProfileForm({
   userId,
   initialProfile,
+  googleAvatarUrl,
 }: PublicProfileFormProps) {
   const [username, setUsername] = useState(initialProfile?.username ?? "");
   const [displayName, setDisplayName] = useState(
     initialProfile?.display_name ?? "",
   );
-  const [avatarUrl, setAvatarUrl] = useState(initialProfile?.avatar_url ?? "");
+  const [avatarUrl, setAvatarUrl] = useState(
+    initialProfile?.avatar_url ?? googleAvatarUrl ?? "",
+  );
   const [bio, setBio] = useState(initialProfile?.bio ?? "");
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState<Message>(null);
@@ -139,6 +144,10 @@ export function PublicProfileForm({
           placeholder="https://…"
           className="rounded-2xl border-2 border-border bg-background px-4 py-3 text-base font-semibold text-text focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
         />
+        <p className="text-xs text-muted">
+          Defaults to your Google profile picture — replace it with any image
+          URL if you&apos;d rather use something else.
+        </p>
       </div>
 
       <div className="flex flex-col gap-2">

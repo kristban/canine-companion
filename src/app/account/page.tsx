@@ -5,6 +5,7 @@ import { SignupForm } from "@/components/SignupForm";
 import { requireUser } from "@/lib/auth/requireUser";
 import { createClient } from "@/lib/supabase/server";
 import { PROFILES_TABLE, type Profile } from "@/lib/profile";
+import { avatarUrlOf } from "@/lib/auth/user";
 import { PublicProfileForm } from "@/components/account/PublicProfileForm";
 import { AccountForm } from "@/components/account/AccountForm";
 
@@ -42,7 +43,11 @@ export default async function AccountPage() {
             </p>
           </div>
 
-          <PublicProfileForm userId={user.id} initialProfile={profile ?? null} />
+          <PublicProfileForm
+            userId={user.id}
+            initialProfile={profile ?? null}
+            googleAvatarUrl={avatarUrlOf(user)}
+          />
           <AccountForm initialEmail={user.email ?? ""} />
         </div>
       </main>

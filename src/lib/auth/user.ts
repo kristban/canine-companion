@@ -19,7 +19,21 @@ export function displayNameOf(user: User | null | undefined): string {
   return "Account";
 }
 
-/** First letter to show in an avatar chip. */
+/** First letter to show in an avatar chip, when no avatar image is available. */
 export function avatarInitialOf(user: User | null | undefined): string {
   return displayNameOf(user).charAt(0).toUpperCase() || "?";
+}
+
+/**
+ * The profile picture Google provided at sign-in (Supabase normalizes it to
+ * `avatar_url`; `picture` is the raw Google claim, kept as a fallback). Null
+ * if there isn't one (e.g. no session, or a future non-Google provider).
+ */
+export function avatarUrlOf(user: User | null | undefined): string | null {
+  if (!user) return null;
+  const meta = user.user_metadata ?? {};
+  const url =
+    (meta.avatar_url as string | undefined) ??
+    (meta.picture as string | undefined);
+  return url && url.trim() ? url.trim() : null;
 }

@@ -6,12 +6,39 @@
 // through the browser Supabase client; the OAuth round-trip returns to
 // /auth/callback and then back to wherever the user was.
 
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
+import type { User } from "@supabase/supabase-js";
 import { useSession } from "./SessionProvider";
 import { getSupabaseBrowserClient } from "@/lib/supabase/client";
-import { avatarInitialOf, displayNameOf } from "@/lib/auth/user";
+import { avatarInitialOf, avatarUrlOf, displayNameOf } from "@/lib/auth/user";
+
+/** The user's Google profile picture, or an initial-letter chip if none. */
+function UserAvatar({ user, size }: { user: User; size: number }) {
+  const avatarUrl = avatarUrlOf(user);
+  if (avatarUrl) {
+    return (
+      <Image
+        src={avatarUrl}
+        alt=""
+        width={size}
+        height={size}
+        className="shrink-0 rounded-full border-2 border-border object-cover"
+      />
+    );
+  }
+  return (
+    <span
+      style={{ width: size, height: size }}
+      className="flex shrink-0 items-center justify-center rounded-full border-2 border-border bg-secondary text-sm"
+      aria-hidden="true"
+    >
+      {avatarInitialOf(user)}
+    </span>
+  );
+}
 
 export function AuthNav() {
   const { user, loading } = useSession();
@@ -90,12 +117,7 @@ export function AuthNav() {
         aria-expanded={open}
         className="transition-smooth inline-flex items-center gap-2 rounded-full border-2 border-border bg-surface py-1.5 pl-1.5 pr-3 text-sm font-bold text-text shadow-hard-sm hover:-translate-y-0.5 hover:shadow-hard focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
       >
-        <span
-          className="flex h-7 w-7 items-center justify-center rounded-full border-2 border-border bg-secondary text-sm"
-          aria-hidden="true"
-        >
-          {avatarInitialOf(user)}
-        </span>
+        <UserAvatar user={user} size={28} />
         <span className="hidden max-w-[10rem] truncate sm:inline">
           {displayNameOf(user)}
         </span>
@@ -109,11 +131,14 @@ export function AuthNav() {
           role="menu"
           className="absolute right-0 z-20 mt-2 w-48 overflow-hidden rounded-2xl border-3 border-border bg-surface shadow-hard"
         >
-          <div className="border-b-2 border-border/40 px-4 py-3">
-            <p className="truncate text-sm font-bold text-text">
-              {displayNameOf(user)}
-            </p>
-            <p className="truncate text-xs text-muted">{user.email}</p>
+          <div className="flex items-center gap-3 border-b-2 border-border/40 px-4 py-3">
+            <UserAvatar user={user} size={36} />
+            <div className="min-w-0">
+              <p className="truncate text-sm font-bold text-text">
+                {displayNameOf(user)}
+              </p>
+              <p className="truncate text-xs text-muted">{user.email}</p>
+            </div>
           </div>
           <Link
             role="menuitem"
