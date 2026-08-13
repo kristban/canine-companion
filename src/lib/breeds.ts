@@ -10,29 +10,36 @@ export type Size = "small" | "medium" | "large";
  * — it is deliberately NOT used by the matcher (`src/lib/match.ts`), which
  * scores the 12 numeric traits + size directly (a group is just a fuzzy proxy
  * for traits we already measure more precisely).
+ *
+ * This follows the Irish Kennel Club / UK Kennel Club seven-group system
+ * (not the AKC's) since it matches what people see on Irish breeder listings
+ * and rescue sites. Notable differences from AKC groups: "Gundog" is AKC's
+ * "Sporting", "Pastoral" is AKC's "Herding", and there is no "Companion"
+ * group — non-sporting companion breeds (Dalmatian, both Bulldogs, every
+ * Poodle size, Boston Terrier, etc.) fall under "Utility" instead.
  */
 export type BreedGroup =
-  | "sporting"
+  | "gundog"
   | "hound"
   | "working"
   | "terrier"
-  | "herding"
+  | "pastoral"
   | "toy"
-  | "companion";
+  | "utility";
 
 /**
  * The groups in the order sections should appear (e.g. on the `/breeds`
  * gallery). `label` is the user-facing name, `emoji` is a decorative sticker
  * for section headers, and `blurb` is a one-line description of the group.
- * `companion` is the catch-all for breeds bred primarily for company rather
- * than a specific working role.
+ * `utility` is the catch-all for breeds bred primarily for company or
+ * historic non-sporting roles rather than a specific working job.
  */
 export const BREED_GROUPS = [
   {
-    value: "sporting",
-    label: "Sporting",
+    value: "gundog",
+    label: "Gundog",
     emoji: "🦆",
-    blurb: "Athletic retrievers and gun dogs, happiest with a job to do.",
+    blurb: "Athletic retrievers, pointers, and setters, happiest with a job to do.",
   },
   {
     value: "hound",
@@ -53,10 +60,10 @@ export const BREED_GROUPS = [
     blurb: "Feisty, tenacious ratters with outsized personalities.",
   },
   {
-    value: "herding",
-    label: "Herding",
+    value: "pastoral",
+    label: "Pastoral",
     emoji: "🐑",
-    blurb: "Brilliant, tireless dogs bred to move livestock.",
+    blurb: "Brilliant, tireless dogs bred to herd and guard livestock.",
   },
   {
     value: "toy",
@@ -65,10 +72,10 @@ export const BREED_GROUPS = [
     blurb: "Small-but-mighty companions built for lap life.",
   },
   {
-    value: "companion",
-    label: "Companion",
+    value: "utility",
+    label: "Utility",
     emoji: "🛋️",
-    blurb: "Easygoing housemates bred first and foremost for good company.",
+    blurb: "A varied catch-all of companions and guardians that don't fit elsewhere.",
   },
 ] as const satisfies ReadonlyArray<{
   value: BreedGroup;
@@ -77,7 +84,7 @@ export const BREED_GROUPS = [
   blurb: string;
 }>;
 
-/** User-facing label for a group value (e.g. "sporting" -> "Sporting"). */
+/** User-facing label for a group value (e.g. "gundog" -> "Gundog"). */
 export function breedGroupLabel(group: BreedGroup): string {
   return BREED_GROUPS.find((g) => g.value === group)?.label ?? group;
 }

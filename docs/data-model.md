@@ -23,8 +23,10 @@ Every breed scores 12 traits on a 1–5 scale (1 = very low, 5 = very high):
 `energy`, `grooming`, `trainability`, `goodWithKids`, `goodWithOtherPets`,
 `apartmentFriendly`, `independence`, `noviceFriendly`, `vocal`,
 `runningPartner`, `heatTolerance`, `coldTolerance`. Each breed also has a
-`size: "small" | "medium" | "large"` and a `group` (one of `sporting`, `hound`,
-`working`, `terrier`, `herding`, `toy`, `companion`).
+`size: "small" | "medium" | "large"` and a `group` (one of `gundog`, `hound`,
+`working`, `terrier`, `pastoral`, `toy`, `utility` — the Irish Kennel Club /
+UK Kennel Club seven-group system, not AKC groups; see `breeds.ts` for the
+notable naming differences).
 
 `group` is a **browsing/organisation aid only** — it groups the `/breeds`
 gallery and gives the admin table a filter. It is deliberately **not** used by
