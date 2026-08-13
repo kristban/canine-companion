@@ -140,8 +140,15 @@ is a display/convenience layer, not a wall.
   deliberately *not* from a server cookie read, so the static pages (`/`,
   `/breeds`, `/privacy`, …) stay static. `useSession()` exposes `{ user, loading }`.
 - **`src/components/AuthNav.tsx`** (in `Header`) is the nav control: logged out →
-  "Continue with Google"; logged in → a name-chip menu (My results, Account, Log
-  out). Sign-in/out run through the browser client.
+  "Continue with Google"; logged in → a name-chip menu (My results, Account,
+  Log out — plus **Admin**, shown only when the signed-in email is on the
+  admin allowlist). Sign-in/out run through the browser client. The allowlist
+  check itself (`src/lib/auth/checkAdmin.ts`) is a Server Action, since
+  `ADMIN_ALLOWED_EMAILS` has no `NEXT_PUBLIC_` prefix and can't be read
+  client-side — `AuthNav` calls it with the user's own email and gets back
+  only a yes/no answer, never the allowlist itself. This is a display
+  convenience only; it grants no access. `/admin` re-checks independently via
+  `requireAdmin()`, same as always (see below).
 - **Per-user pages** `/account` and `/results` are real routes with hand-rolled
   chrome; each calls `requireUser()` (`src/lib/auth/requireUser.ts`), which
   redirects signed-out visitors to **`/login`** (the public, allowlist-free login

@@ -14,6 +14,7 @@ import type { User } from "@supabase/supabase-js";
 import { useSession } from "./SessionProvider";
 import { getSupabaseBrowserClient } from "@/lib/supabase/client";
 import { avatarInitialOf, avatarUrlOf, displayNameOf } from "@/lib/auth/user";
+import { isAdminEmail } from "@/lib/auth/checkAdmin";
 
 /** The user's Google profile picture, or an initial-letter chip if none. */
 function UserAvatar({ user, size }: { user: User; size: number }) {
@@ -45,7 +46,25 @@ export function AuthNav() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [busy, setBusy] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
+
+  // Ask the server whether this account is on the admin allowlist — the
+  // allowlist itself (ADMIN_ALLOWED_EMAILS) never reaches the browser, only
+  // this yes/no answer for the signed-in user's own email. No reset-to-false
+  // branch for the signed-out case: the menu (where isAdmin is read) only
+  // renders at all when `user` is truthy, so a stale value is inert, and
+  // sign-out already does a full page reload that clears all state anyway.
+  useEffect(() => {
+    if (!user?.email) return;
+    let active = true;
+    isAdminEmail(user.email).then((allowed) => {
+      if (active) setIsAdmin(allowed);
+    });
+    return () => {
+      active = false;
+    };
+  }, [user?.email]);
 
   useEffect(() => {
     if (!open) return;
@@ -156,6 +175,16 @@ export function AuthNav() {
           >
             Account
           </Link>
+          {isAdmin ? (
+            <Link
+              role="menuitem"
+              href="/admin"
+              onClick={() => setOpen(false)}
+              className="transition-smooth block px-4 py-2.5 text-sm font-bold text-text hover:bg-background"
+            >
+              Admin
+            </Link>
+          ) : null}
           <button
             role="menuitem"
             type="button"
