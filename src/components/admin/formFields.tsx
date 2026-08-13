@@ -48,7 +48,7 @@ interface TextFieldProps {
   onChange: (value: string) => void;
   error?: string;
   hint?: ReactNode;
-  type?: "text" | "email";
+  type?: "text" | "email" | "date";
   autoComplete?: string;
   readOnly?: boolean;
 }

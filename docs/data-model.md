@@ -40,6 +40,41 @@ trait fields plus `id`, `name`, `emoji`, `tagline`, `description`, `size`, and
 `breed_group`. The table enforces the 1–5 range, the allowed size/group values,
 and required fields via check/not-null constraints (see `supabase/schema.sql`).
 
+## `src/lib/articles.ts` and the `articles` table
+
+`articles.ts` defines the `Article` type only — no bundled data, same split as
+`breeds.ts` / `getBreeds.ts`. `getArticles()` (`src/lib/getArticles.ts`) loads
+the "Paws & Pointers" catalog (`/guides`) from the Supabase `articles` table
+at request time, mapping snake_case columns (`reading_time`, `published_at`)
+to the camelCase `Article` shape (`readTime` — formatted as `"9 min read"`,
+`date`). If Supabase isn't configured or is unreachable, `getArticles()`
+returns an empty array and the UI shows an empty state, identically to
+`getBreeds()`.
+
+Columns: `id` (text, PK — the slug used in the `/guides/[slug]` URL), `title`,
+`excerpt`, `emoji`, `category` (free text — no fixed registry like
+`BREED_GROUPS`, since the catalog is small and fully admin-curated),
+`tags` (`text[]`), `reading_time` (smallint, 1–60), `body` (text — the
+article's markdown), `published_at` (date), plus `created_at` / `updated_at`.
+See `supabase/schema.sql` for the full constraints.
+
+`body` is rendered with `<ArticleBody>` (`src/components/ArticleBody.tsx`),
+which wraps `react-markdown` + `remark-gfm` (table support) with components
+mapped to the design system's styling — headings, links, tables, blockquotes,
+and lists don't fall back to react-markdown's bare HTML. Article content is
+plain markdown, not MDX: no embedded JSX/components, since bodies are
+admin-authored via a `<textarea>` in `/admin/articles`, not files reviewed in
+a PR.
+
+**To publish an article:** use `/admin/articles` → "New article" (or edit an
+existing one). No code change or redeploy needed — `getArticles()` revalidates
+hourly, and every admin write additionally calls `revalidatePath` on the
+public `/guides` routes, so changes appear immediately after saving. The admin
+form and data layer (`src/lib/admin/articles.ts`,
+`src/components/admin/ArticleForm.tsx`) mirror the breeds admin exactly; see
+`docs/architecture.md` → "Admin authentication" for how `/admin` itself is
+gated.
+
 ## `src/lib/questions.ts`
 
 `questions` is an ordered array of `QuizQuestion`, each with 2–4 `QuizOption`s.

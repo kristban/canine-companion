@@ -8,13 +8,20 @@ import { Quiz } from "./Quiz";
 import { Results } from "./Results";
 import { SignupForm } from "./SignupForm";
 import { Breed } from "@/lib/breeds";
+import { Article } from "@/lib/articles";
 import { QuizOption } from "@/lib/questions";
 import { matchBreeds, MatchResult } from "@/lib/match";
 import { clearPendingResults, readPendingResults } from "@/lib/results";
 
 type View = "landing" | "quiz" | "results";
 
-export function AppShell({ breeds }: { breeds: Breed[] }) {
+export function AppShell({
+  breeds,
+  articles,
+}: {
+  breeds: Breed[];
+  articles: Article[];
+}) {
   const [view, setView] = useState<View>("landing");
   const [results, setResults] = useState<MatchResult[]>([]);
   const [answers, setAnswers] = useState<QuizOption[]>([]);
@@ -54,7 +61,11 @@ export function AppShell({ breeds }: { breeds: Breed[] }) {
       />
       <main className="flex flex-1 flex-col">
         {view === "landing" && (
-          <Landing onStart={() => setView("quiz")} breeds={breeds} />
+          <Landing
+            onStart={() => setView("quiz")}
+            breeds={breeds}
+            articles={articles}
+          />
         )}
         {view === "quiz" && (
           <Quiz

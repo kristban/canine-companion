@@ -10,8 +10,8 @@
   `CookieConsent`, `SignupForm` — each needs local state, `useRouter`, or a
   browser-only API (`localStorage`, `setInterval`, etc.). Everything else
   (`Footer`, `Landing`, `HowItWorks`, `BreedCard`, `AnswersRecap`,
-  `LegalPage`, `Results`, `ArticleCard`, `GuidesPreview`) is a plain server
-  component. Before adding
+  `LegalPage`, `Results`, `ArticleCard`, `GuidesPreview`, `ArticleBody`) is a
+  plain server component. Before adding
   `"use client"` to something, check whether the interactivity can live in a
   smaller child component instead of the whole tree.
 - Reuse the shared `LegalPage` layout component for any new static/standalone
@@ -19,9 +19,9 @@
   the `<Header>`/`<Footer>` wiring again (see `docs/architecture.md` for why
   this matters for the "Start the quiz" button specifically).
 
-## Backend: Supabase (newsletter + breeds)
+## Backend: Supabase (newsletter, breeds, articles)
 
-Three features talk to Supabase; everything else stays client-side.
+Four features talk to Supabase; everything else stays client-side.
 
 - **Newsletter:** the form (`SignupForm`) inserts the subscriber's name + email
   into the `newsletter_subscribers` table via `subscribeToNewsletter` in
@@ -32,18 +32,41 @@ Three features talk to Supabase; everything else stays client-side.
   empty list and the pages show an empty state. Breeds are fetched in Server
   Components (`src/app/page.tsx`, `src/app/breeds/page.tsx`) and passed down as
   props — client components never fetch them.
+- **Articles** ("Paws & Pointers", `/guides`): `getArticles()` in
+  `src/lib/getArticles.ts` reads the catalog — including each article's
+  markdown `body` — from the Supabase `articles` table, the same
+  fetch-and-map shape as breeds. `src/components/ArticleBody.tsx` renders that
+  markdown with `react-markdown` + `remark-gfm` (table support), mapped to the
+  design system's styling rather than react-markdown's bare HTML. `/guides`
+  and `/guides/[slug]` fetch directly; the homepage teaser
+  (`GuidesPreview`) receives articles as a prop threaded through
+  `page.tsx` → `AppShell` → `Landing`, exactly like breeds — an async
+  Server Component can't be nested inside `AppShell`'s `"use client"`
+  boundary, so the fetch has to happen above it.
 - **Admin auth:** Google sign-in gating `/admin`, via Supabase Auth. This is the
   **one deliberate exception** to the raw-fetch, no-client-library rule: it uses
   `@supabase/ssr` (+ `@supabase/supabase-js`) because OAuth/PKCE + cookie
   sessions are the "don't hand-roll security" case. The exception is scoped to
   auth only (`src/lib/supabase/server.ts`, `src/lib/auth/**`, `src/proxy.ts`,
-  `src/app/auth/callback/`) — the newsletter and breeds data layers stay on raw
-  `fetch`. See `docs/architecture.md` → "Admin authentication" for the full
-  design. Needs `ADMIN_ALLOWED_EMAILS` in addition to the Supabase env vars.
+  `src/app/auth/callback/`) — the newsletter, breeds, and articles data layers
+  stay on raw `fetch`. See `docs/architecture.md` → "Admin authentication" for
+  the full design. Needs `ADMIN_ALLOWED_EMAILS` in addition to the Supabase
+  env vars.
 
-Both need `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY` (see
-`.env.example`); the tables + row-level security live in `supabase/schema.sql`,
-and the data model is documented in `docs/data-model.md`.
+Both breeds and articles are also fully manageable from `/admin` (create,
+edit, delete) — see `src/lib/admin/breeds.ts` / `articles.ts` and
+`src/components/admin/BreedForm.tsx` / `ArticleForm.tsx`. Admin writes use the
+service-role key (bypasses RLS; never exposed to the browser — see
+`src/lib/admin/http.ts`), while the public site reads with the anon key under
+RLS. An article added or edited in `/admin/articles` appears on the public
+site within the hour (the `getArticles()` cache window), or immediately if the
+edit went through a Server Action, since every admin write action calls
+`revalidatePath` on the affected public routes.
+
+All Supabase-backed data needs `NEXT_PUBLIC_SUPABASE_URL` and
+`NEXT_PUBLIC_SUPABASE_ANON_KEY` (see `.env.example`); the tables + row-level
+security live in `supabase/schema.sql`, and the data model is documented in
+`docs/data-model.md`.
 
 Beyond those, the site stays deliberately backend-free: no API routes and no
 email service. There is now **one authorized persistence exception**:
@@ -53,27 +76,6 @@ results are computed and kept entirely in the browser and are never sent
 anywhere for anonymous visitors — keep it that way. Don't add *further*
 persistence or API calls unless explicitly asked; treat this as an intentional
 scope boundary, not an unfinished stub.
-
-The `/guides` articles ("Paws & Pointers") section follows the same boundary:
-articles are `.mdx` files in `src/content/advice/` plus a matching entry in
-`src/lib/articles.ts`, not a Supabase table, since it's editorial content
-rather than user data. **To publish a new article:**
-
-1. Add `src/content/advice/<slug>.mdx`, starting with `export const metadata
-   = { title, slug, description, category, tags, readingTime, date }` (a
-   plain JS object, not YAML frontmatter — `@next/mdx` doesn't parse
-   frontmatter, see `docs/architecture.md`). The body is markdown/MDX
-   (`remark-gfm` is enabled, so tables and other GFM syntax work); heading
-   levels start at `##`, since the page shell renders the `<h1>` from
-   `metadata.title`.
-2. Add a matching entry to the `articles` array in `src/lib/articles.ts`
-   (`id` = the slug/filename). This is the single source of truth the
-   listing page, the homepage teaser, and `generateStaticParams` all read
-   from — the `.mdx` file is only ever dynamically imported by
-   `src/app/guides/[slug]/page.tsx` once that id is known to exist.
-
-If this ever needs `/admin`-style management, that's a deliberate follow-up,
-not a default.
 
 ## Assets
 

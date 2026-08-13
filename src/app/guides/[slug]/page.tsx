@@ -4,24 +4,18 @@ import { notFound } from "next/navigation";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { SignupForm } from "@/components/SignupForm";
-import { articles } from "@/lib/articles";
+import { ArticleBody } from "@/components/ArticleBody";
+import { getArticles } from "@/lib/getArticles";
 
 interface ArticlePageProps {
   params: Promise<{ slug: string }>;
 }
 
-// Static list of known articles — see docs/conventions.md. Any slug outside
-// this list 404s instead of attempting (and failing) a dynamic import.
-export function generateStaticParams() {
-  return articles.map((article) => ({ slug: article.id }));
-}
-
-export const dynamicParams = false;
-
 export async function generateMetadata({
   params,
 }: ArticlePageProps): Promise<Metadata> {
   const { slug } = await params;
+  const articles = await getArticles();
   const article = articles.find((a) => a.id === slug);
   if (!article) return {};
   return {
@@ -42,17 +36,15 @@ function formatDate(iso: string) {
 // /guides), not part of AppShell. Header gets no props, so "Start the quiz"
 // falls back to /?start=quiz, which AppShell reads on mount (see
 // docs/architecture.md).
+//
+// No generateStaticParams/dynamicParams here — deliberately fully dynamic
+// (like /breeds), so an article added via /admin/articles appears here
+// without a redeploy. See getArticles()'s hourly revalidate.
 export default async function ArticlePage({ params }: ArticlePageProps) {
   const { slug } = await params;
+  const articles = await getArticles();
   const article = articles.find((a) => a.id === slug);
   if (!article) notFound();
-
-  // Content lives in src/content/advice/*.mdx, one file per article id — see
-  // docs/conventions.md. generateStaticParams + dynamicParams = false mean
-  // this only ever runs for a slug already known to have a matching file.
-  const { default: Content } = await import(
-    `@/content/advice/${slug}.mdx`
-  );
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -79,7 +71,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
           </div>
 
           <div className="mt-2">
-            <Content />
+            <ArticleBody body={article.body} />
           </div>
 
           {article.tags.length > 0 && (

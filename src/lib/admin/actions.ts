@@ -23,6 +23,12 @@ import {
   updateSubscriberRow,
   validateSubscriber,
 } from "./subscribers";
+import {
+  createArticleRow,
+  deleteArticleRow,
+  updateArticleRow,
+  validateArticle,
+} from "./articles";
 
 // Breed edits should show up on the public site promptly, not only after the
 // hourly getBreeds() revalidation window.
@@ -36,6 +42,16 @@ function revalidateBreedPaths(id?: string) {
 function revalidateSubscriberPaths(id?: string) {
   revalidatePath("/admin/newsletter");
   if (id) revalidatePath(`/admin/newsletter/${id}`);
+}
+
+// Article edits should show up on the public site promptly, not only after
+// the hourly getArticles() revalidation window.
+function revalidateArticlePaths(id?: string) {
+  revalidatePath("/admin/articles");
+  if (id) revalidatePath(`/admin/articles/${id}`);
+  revalidatePath("/");
+  revalidatePath("/guides");
+  if (id) revalidatePath(`/guides/${id}`);
 }
 
 // ---------------------------------------------------------------------------
@@ -159,4 +175,63 @@ export async function deleteSubscriber(
 
   revalidateSubscriberPaths(id);
   redirect("/admin/newsletter");
+}
+
+// ---------------------------------------------------------------------------
+// Articles
+// ---------------------------------------------------------------------------
+
+export async function createArticle(
+  _prevState: FormState,
+  formData: FormData,
+): Promise<FormState> {
+  await requireAdmin();
+
+  const validation = validateArticle(formData);
+  if (!validation.ok) return { errors: validation.errors };
+
+  const result = await createArticleRow(validation.value);
+  if (!result.ok) {
+    if (result.conflict) {
+      return { errors: { id: "An article with this ID already exists." } };
+    }
+    return { formError: result.error };
+  }
+
+  revalidateArticlePaths(result.data.id);
+  redirect(`/admin/articles/${result.data.id}`);
+}
+
+export async function updateArticle(
+  id: string,
+  _prevState: FormState,
+  formData: FormData,
+): Promise<FormState> {
+  await requireAdmin();
+
+  const validation = validateArticle(formData);
+  if (!validation.ok) return { errors: validation.errors };
+
+  const result = await updateArticleRow(id, validation.value.columns);
+  if (!result.ok) return { formError: result.error };
+
+  revalidateArticlePaths(id);
+  redirect(`/admin/articles/${id}`);
+}
+
+export async function deleteArticle(
+  _prevState: DeleteState,
+  formData: FormData,
+): Promise<DeleteState> {
+  await requireAdmin();
+
+  const id = String(formData.get("id") ?? "");
+  if (!id) return { error: "Missing article id." };
+
+  const result = await deleteArticleRow(id);
+  if (!result.ok) return { error: result.error };
+  if (result.data.deleted === 0) return { error: "Article not found." };
+
+  revalidateArticlePaths(id);
+  redirect("/admin/articles");
 }

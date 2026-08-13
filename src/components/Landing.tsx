@@ -3,13 +3,15 @@ import { HowItWorks } from "./HowItWorks";
 import { BreedShowcase } from "./BreedShowcase";
 import { GuidesPreview } from "./GuidesPreview";
 import { Breed } from "@/lib/breeds";
+import { Article } from "@/lib/articles";
 
 interface LandingProps {
   onStart: () => void;
   breeds: Breed[];
+  articles: Article[];
 }
 
-export function Landing({ onStart, breeds }: LandingProps) {
+export function Landing({ onStart, breeds, articles }: LandingProps) {
   return (
     <div className="flex flex-1 flex-col">
       <section className="w-full bg-grid-pattern bg-background">
@@ -62,7 +64,7 @@ export function Landing({ onStart, breeds }: LandingProps) {
 
       <HowItWorks />
       <BreedShowcase breeds={breeds} />
-      <GuidesPreview />
+      <GuidesPreview articles={articles} />
     </div>
   );
 }

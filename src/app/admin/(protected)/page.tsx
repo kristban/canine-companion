@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { countBreeds } from "@/lib/admin/breeds";
+import { countArticles } from "@/lib/admin/articles";
 import { isAdminConfigured } from "@/lib/admin/http";
 import { countSubscribers } from "@/lib/admin/subscribers";
 import { AdminPageHeading, ConfigNotice } from "@/components/admin/ui";
@@ -41,30 +42,39 @@ export default async function AdminDashboardPage() {
 
   let breedCount: number | null = null;
   let subscriberCount: number | null = null;
+  let articleCount: number | null = null;
   if (configured) {
-    const [breeds, subscribers] = await Promise.all([
+    const [breeds, subscribers, articles] = await Promise.all([
       countBreeds(),
       countSubscribers(),
+      countArticles(),
     ]);
     breedCount = breeds.ok ? breeds.data : null;
     subscriberCount = subscribers.ok ? subscribers.data : null;
+    articleCount = articles.ok ? articles.data : null;
   }
 
   return (
     <div className="flex flex-col gap-8">
       <AdminPageHeading
         title="Dashboard"
-        description="Manage the breed catalog and newsletter subscribers."
+        description="Manage the breed catalog, Paws & Pointers articles, and newsletter subscribers."
       />
 
       {!configured ? <ConfigNotice /> : null}
 
-      <div className="grid gap-6 sm:grid-cols-2">
+      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
         <CountCard
           href="/admin/breeds"
           label="Breeds"
           emoji="🐕"
           count={breedCount}
+        />
+        <CountCard
+          href="/admin/articles"
+          label="Articles"
+          emoji="📝"
+          count={articleCount}
         />
         <CountCard
           href="/admin/newsletter"

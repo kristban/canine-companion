@@ -60,7 +60,7 @@ homepage-only or global, and match the `href` style above.
 
 ```
 RootLayout (src/app/layout.tsx)
-├── "/" → page.tsx (server: getBreeds) → AppShell (client, owns view state)
+├── "/" → page.tsx (server: getBreeds, getArticles) → AppShell (client, owns view state)
 │   ├── Header
 │   ├── Landing | Quiz | Results   (one at a time, by view state)
 │   ├── SignupForm
@@ -75,36 +75,21 @@ RootLayout (src/app/layout.tsx)
 │   ├── (breed card grid)
 │   ├── SignupForm
 │   └── Footer
-├── "/guides" → GuidesPage (server; hand-rolled, like BreedsPage)
+├── "/guides" → GuidesPage (server: getArticles; hand-rolled, like BreedsPage)
 │   ├── Header
 │   ├── (article cards, grouped by category)
 │   ├── SignupForm
 │   └── Footer
-├── "/guides/[slug]" → ArticlePage (server; hand-rolled, like GuidesPage)
+├── "/guides/[slug]" → ArticlePage (server: getArticles; hand-rolled, like GuidesPage)
 │   ├── Header
-│   ├── (article header + dynamically-imported .mdx body)
+│   ├── (article header + markdown body via ArticleBody)
 │   ├── SignupForm
 │   └── Footer
 ├── not-found (404) → same shape as LegalPage, hand-rolled
 └── CookieConsent (rendered globally in RootLayout, outside AppShell)
 ```
 
-### The `/guides/[slug]` MDX pipeline
-
-Article bodies are `.mdx` files in `src/content/advice/`, not routes under
-`src/app/` — `src/app/guides/[slug]/page.tsx` dynamically imports the file
-matching the requested slug (`import(`@/content/advice/${slug}.mdx`)`), the
-pattern Next.js's own MDX guide documents for content collections
-(`node_modules/next/dist/docs/01-app/02-guides/mdx.md`). `generateStaticParams`
-+ `dynamicParams = false` mean only slugs already listed in
-`src/lib/articles.ts` resolve; anything else 404s before the import is even
-attempted.
-
-`@next/mdx` (configured in `next.config.ts`) enables the `.mdx` import itself;
-it does **not** parse YAML frontmatter, which is why each article's metadata
-is a plain `export const metadata = {...}` object at the top of the file
-instead. `src/mdx-components.tsx` maps markdown output (headings, tables,
-blockquotes, links, lists) to the site's design-system tokens — see
+Articles (like breeds) are Supabase-backed and manageable from `/admin` — see
 `docs/conventions.md` for how to add a new article.
 
 ## Admin authentication (Google sign-in gate)

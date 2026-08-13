@@ -60,6 +60,26 @@ export interface Subscriber {
 }
 
 /**
+ * An article as the admin UI works with it: the camelCase `Article` shape
+ * (see `@/lib/articles`) plus the server-managed timestamps. `category` and
+ * `tags` are free text — unlike breed groups there's no fixed registry, since
+ * the article catalog is small and fully admin-curated.
+ */
+export interface AdminArticle {
+  id: string;
+  title: string;
+  excerpt: string;
+  emoji: string;
+  category: string;
+  tags: string[];
+  readingTime: number;
+  body: string;
+  publishedAt: string;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+/**
  * The 12 scored traits, in display order, with a label + icon. Drives the breed
  * form's numeric inputs and the read-only trait bars on the detail page.
  */

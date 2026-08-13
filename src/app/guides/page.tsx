@@ -3,7 +3,7 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { SignupForm } from "@/components/SignupForm";
 import { ArticleCard } from "@/components/ArticleCard";
-import { articles } from "@/lib/articles";
+import { getArticles } from "@/lib/getArticles";
 
 export const metadata: Metadata = {
   title: "Paws & Pointers — Canine Companion",
@@ -15,13 +15,14 @@ export const metadata: Metadata = {
 // not-found.tsx), not part of AppShell. Header gets no props, so "Start the
 // quiz" falls back to /?start=quiz, which AppShell reads on mount (see
 // docs/architecture.md).
-export default function GuidesPage() {
+export default async function GuidesPage() {
+  const articles = await getArticles();
   const hasArticles = articles.length > 0;
 
   // Bucket articles into categories, in the order categories first appear in
-  // `articles` (which is itself curated) — see docs/conventions.md. Simpler
-  // than the /breeds grouping since categories here are fully static, not
-  // admin-editable, so there's no need for a separate ordered registry.
+  // `articles` (sorted by published_at desc — see getArticles()). Unlike
+  // breed groups, article categories are free text set per-article in
+  // /admin/articles, so there's no fixed registry to order by instead.
   const categories = Array.from(new Set(articles.map((a) => a.category)));
   const grouped = categories.map((category) => ({
     category,

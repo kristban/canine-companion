@@ -1,8 +1,8 @@
 import Link from "next/link";
-import { articles } from "@/lib/articles";
+import { Article } from "@/lib/articles";
 import { ArticleCard } from "./ArticleCard";
 
-export function GuidesPreview() {
+export function GuidesPreview({ articles }: { articles: Article[] }) {
   const featured = articles.slice(0, 3);
 
   return (
