@@ -109,7 +109,7 @@ export function AuthNav() {
 
   // Reserve space while the first session check resolves (avoids layout shift).
   if (loading) {
-    return <span className="inline-block h-10 w-24" aria-hidden="true" />;
+    return <span className="inline-block h-10 w-10 sm:w-24" aria-hidden="true" />;
   }
 
   if (!user) {
@@ -118,11 +118,11 @@ export function AuthNav() {
         type="button"
         onClick={signIn}
         disabled={busy}
-        className="transition-smooth inline-flex items-center gap-2 rounded-full border-2 border-border bg-surface px-4 py-2.5 text-sm font-bold text-text shadow-hard-sm hover:-translate-y-0.5 hover:shadow-hard focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:cursor-not-allowed disabled:opacity-70"
+        aria-label="Continue with Google"
+        className="transition-smooth flex h-10 w-10 items-center justify-center gap-2 rounded-full border-2 border-border bg-surface text-sm font-bold text-text shadow-hard-sm hover:-translate-y-0.5 hover:shadow-hard focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:cursor-not-allowed disabled:opacity-70 sm:w-auto sm:px-4 sm:py-2.5"
       >
         <span aria-hidden="true">🔑</span>
         <span className="hidden sm:inline">Continue with Google</span>
-        <span className="sm:hidden">Log in</span>
       </button>
     );
   }

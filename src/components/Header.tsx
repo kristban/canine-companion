@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { AuthNav } from "./AuthNav";
+import { MobileNav } from "./MobileNav";
 
 interface HeaderProps {
   onLogoClick?: () => void;
@@ -20,19 +21,19 @@ export function Header({ onLogoClick, onStart }: HeaderProps) {
         <button
           type="button"
           onClick={handleLogoClick}
-          className="transition-smooth group flex items-center gap-2 rounded-full focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary"
+          className="transition-smooth group flex min-w-0 items-center gap-2 rounded-full focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary"
         >
           <span
-            className="flex h-9 w-9 items-center justify-center rounded-full border-2 border-border bg-secondary text-lg group-hover:-rotate-12 transition-smooth"
+            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border-2 border-border bg-secondary text-lg group-hover:-rotate-12 transition-smooth"
             aria-hidden="true"
           >
             🐾
           </span>
-          <span className="font-display text-lg font-semibold tracking-tight text-text sm:text-xl">
+          <span className="truncate font-display text-lg font-semibold tracking-tight text-text sm:text-xl">
             Canine Companion
           </span>
         </button>
-        <div className="flex items-center gap-3 sm:gap-5">
+        <div className="flex items-center gap-2 sm:gap-5">
           <nav
             aria-label="Primary"
             className="hidden items-center gap-6 sm:flex"
@@ -56,6 +57,7 @@ export function Header({ onLogoClick, onStart }: HeaderProps) {
               Newsletter
             </Link>
           </nav>
+          <MobileNav />
           <AuthNav />
           <button
             type="button"
