@@ -32,7 +32,7 @@ export function BreedCard({
         </span>
         <div>
           <p
-            className={`text-xs font-extrabold uppercase tracking-wide ${isAvoid ? "text-muted" : "text-primary"}`}
+            className={`text-xs font-extrabold uppercase tracking-wide ${isAvoid ? "text-muted" : "text-link"}`}
           >
             {isAvoid ? "Probably not a fit" : `${RANK_BADGES[rank] ?? `#${rank + 1}`} match`}
           </p>
@@ -58,7 +58,7 @@ export function BreedCard({
             />
           </div>
           <span
-            className={`text-sm font-extrabold ${isAvoid ? "text-muted" : "text-primary"}`}
+            className={`text-sm font-extrabold ${isAvoid ? "text-muted" : "text-link"}`}
           >
             {matchPercent}%
           </span>

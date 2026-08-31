@@ -19,7 +19,7 @@ export function Landing({ onStart, breeds, articles }: LandingProps) {
           <div className="order-2 flex flex-col items-center text-center lg:order-1 lg:items-start lg:text-left">
             <h1 className="font-display text-4xl font-semibold tracking-tight text-text sm:text-5xl">
               Find your perfect{" "}
-              <span className="text-primary">canine companion</span>
+              <span className="text-link">canine companion</span>
             </h1>
             <p className="mt-5 max-w-xl text-lg leading-relaxed text-muted">
               Answer a handful of quick questions about your home, activity
@@ -50,7 +50,7 @@ export function Landing({ onStart, breeds, articles }: LandingProps) {
                 />
               </div>
               <span
-                className="absolute -right-4 -top-4 flex h-14 w-14 rotate-12 items-center justify-center rounded-full border-2 border-dashed border-border bg-secondary text-center text-[0.6rem] font-bold uppercase leading-tight text-text shadow-hard-sm sm:-right-6"
+                className="absolute -right-4 -top-4 flex h-14 w-14 rotate-12 items-center justify-center rounded-full border-2 border-dashed border-border bg-secondary text-center text-[0.6rem] font-bold uppercase leading-tight text-ink shadow-hard-sm sm:-right-6"
                 aria-hidden="true"
               >
                 2 min

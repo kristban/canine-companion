@@ -119,7 +119,7 @@ export function SubscriberForm({
         </button>
         <Link
           href={cancelHref}
-          className="transition-smooth text-sm font-bold text-muted hover:text-primary"
+          className="transition-smooth text-sm font-bold text-muted hover:text-link"
         >
           Cancel
         </Link>

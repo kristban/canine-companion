@@ -36,7 +36,7 @@ export default async function AccountPage() {
         <div className="mx-auto flex w-full max-w-2xl flex-col gap-8 px-4 py-16 sm:px-6">
           <div>
             <h1 className="font-display text-4xl font-semibold tracking-tight text-text sm:text-5xl">
-              Your <span className="text-primary">account</span>
+              Your <span className="text-link">account</span>
             </h1>
             <p className="mt-3 text-lg leading-relaxed text-muted">
               Manage your public profile and sign-in email.

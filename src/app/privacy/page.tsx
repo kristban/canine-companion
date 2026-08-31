@@ -82,7 +82,7 @@ export default function PrivacyPolicyPage() {
             at{" "}
             <a
               href="mailto:hello@caninecompanion.app"
-              className="font-semibold text-primary underline underline-offset-2 hover:text-secondary"
+              className="font-semibold text-link underline underline-offset-2 hover:text-secondary"
             >
               hello@caninecompanion.app
             </a>{" "}
@@ -106,7 +106,7 @@ export default function PrivacyPolicyPage() {
           cookies. See our{" "}
           <a
             href="/cookies"
-            className="font-semibold text-primary underline underline-offset-2 hover:text-secondary"
+            className="font-semibold text-link underline underline-offset-2 hover:text-secondary"
           >
             Cookie Policy
           </a>{" "}
@@ -138,7 +138,7 @@ export default function PrivacyPolicyPage() {
           Questions? Reach us at{" "}
           <a
             href="mailto:hello@caninecompanion.app"
-            className="font-semibold text-primary underline underline-offset-2 hover:text-secondary"
+            className="font-semibold text-link underline underline-offset-2 hover:text-secondary"
           >
             hello@caninecompanion.app
           </a>

@@ -50,7 +50,7 @@ export function CookieConsent() {
           of cookies in line with GDPR. See our{" "}
           <Link
             href="/cookies"
-            className="font-semibold text-primary underline underline-offset-2 hover:text-secondary"
+            className="font-semibold text-link underline underline-offset-2 hover:text-secondary"
           >
             Cookie Policy
           </Link>{" "}

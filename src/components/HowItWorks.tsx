@@ -26,7 +26,7 @@ const steps: Step[] = [
 ];
 
 const STEP_COLORS = ["bg-secondary", "bg-primary", "bg-accent"];
-const STEP_TEXT_COLORS = ["text-text", "text-white", "text-text"];
+const STEP_TEXT_COLORS = ["text-ink", "text-white", "text-ink"];
 
 export function HowItWorks() {
   return (

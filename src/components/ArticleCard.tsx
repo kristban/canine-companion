@@ -14,7 +14,7 @@ export function ArticleCard({ article }: { article: Article }) {
         {article.emoji}
       </span>
       <div>
-        <p className="text-xs font-extrabold uppercase tracking-wide text-primary">
+        <p className="text-xs font-extrabold uppercase tracking-wide text-link">
           {article.category} · {article.readTime}
         </p>
         <h3 className="mt-1 font-display text-lg font-semibold tracking-tight text-text">

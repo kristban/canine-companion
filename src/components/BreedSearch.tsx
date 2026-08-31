@@ -43,7 +43,7 @@ function BreedGridItem({
         </div>
 
         <div>
-          <p className="text-sm font-bold text-primary">{breed.tagline}</p>
+          <p className="text-sm font-bold text-link">{breed.tagline}</p>
           <p className="mt-1 text-sm leading-relaxed text-muted">
             {breed.description}
           </p>

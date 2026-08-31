@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { AuthNav } from "./AuthNav";
 import { MobileNav } from "./MobileNav";
+import { ThemeToggle } from "./ThemeToggle";
 
 interface HeaderProps {
   onLogoClick?: () => void;
@@ -40,23 +41,24 @@ export function Header({ onLogoClick, onStart }: HeaderProps) {
           >
             <Link
               href="/breeds"
-              className="transition-smooth text-sm font-bold text-text hover:text-primary"
+              className="transition-smooth text-sm font-bold text-text hover:text-link"
             >
               Breeds
             </Link>
             <Link
               href="/guides"
-              className="transition-smooth text-sm font-bold text-text hover:text-primary"
+              className="transition-smooth text-sm font-bold text-text hover:text-link"
             >
               Paws &amp; Pointers
             </Link>
             <Link
               href="#signup-heading"
-              className="transition-smooth text-sm font-bold text-text hover:text-primary"
+              className="transition-smooth text-sm font-bold text-text hover:text-link"
             >
               Newsletter
             </Link>
           </nav>
+          <ThemeToggle />
           <MobileNav />
           <AuthNav />
           <button

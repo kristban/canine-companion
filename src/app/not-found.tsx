@@ -19,7 +19,7 @@ export default function NotFound() {
             🐕‍🦺
           </span>
           <span
-            className="absolute -right-6 -top-4 flex h-14 w-14 rotate-12 items-center justify-center rounded-full border-2 border-dashed border-border bg-secondary text-center text-[0.6rem] font-bold uppercase leading-tight text-text shadow-hard-sm sm:-right-8"
+            className="absolute -right-6 -top-4 flex h-14 w-14 rotate-12 items-center justify-center rounded-full border-2 border-dashed border-border bg-secondary text-center text-[0.6rem] font-bold uppercase leading-tight text-ink shadow-hard-sm sm:-right-8"
             aria-hidden="true"
           >
             lost
@@ -29,7 +29,7 @@ export default function NotFound() {
         </div>
 
         <h1 className="mt-8 font-display text-6xl font-semibold tracking-tight text-text sm:text-7xl">
-          4<span className="text-primary">0</span>4
+          4<span className="text-link">0</span>4
         </h1>
         <p className="mt-4 max-w-md text-lg leading-relaxed text-muted">
           Looks like this page ran off the trail. The page you&apos;re

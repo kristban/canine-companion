@@ -33,7 +33,7 @@ function UserAvatar({ user, size }: { user: User; size: number }) {
   return (
     <span
       style={{ width: size, height: size }}
-      className="flex shrink-0 items-center justify-center rounded-full border-2 border-border bg-secondary text-sm"
+      className="flex shrink-0 items-center justify-center rounded-full border-2 border-border bg-secondary text-sm text-ink"
       aria-hidden="true"
     >
       {avatarInitialOf(user)}

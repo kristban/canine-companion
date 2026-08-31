@@ -35,7 +35,7 @@ export default async function AdminLoginPage({
       <div className="w-full max-w-md">
         <Link
           href="/"
-          className="transition-smooth mb-4 inline-block text-sm font-bold text-muted hover:text-primary"
+          className="transition-smooth mb-4 inline-block text-sm font-bold text-muted hover:text-link"
         >
           ← Back to Canine Companion
         </Link>

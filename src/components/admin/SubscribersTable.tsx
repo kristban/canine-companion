@@ -74,13 +74,13 @@ const COLUMNS: Column<Subscriber>[] = [
       <div className="flex justify-end gap-3 font-bold">
         <Link
           href={`/admin/newsletter/${row.id}`}
-          className="transition-smooth text-primary hover:underline"
+          className="transition-smooth text-link hover:underline"
         >
           View
         </Link>
         <Link
           href={`/admin/newsletter/${row.id}/edit`}
-          className="transition-smooth text-primary hover:underline"
+          className="transition-smooth text-link hover:underline"
         >
           Edit
         </Link>

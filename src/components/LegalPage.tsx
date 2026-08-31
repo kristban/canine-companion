@@ -18,7 +18,7 @@ export function LegalPage({ title, updated, children }: LegalPageProps) {
         <div className="mx-auto w-full max-w-3xl px-4 py-16 sm:px-6">
           <Link
             href="/"
-            className="transition-smooth text-sm font-bold text-muted hover:text-primary"
+            className="transition-smooth text-sm font-bold text-muted hover:text-link"
           >
             ← Back to home
           </Link>

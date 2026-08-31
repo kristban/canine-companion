@@ -67,7 +67,7 @@ export function SaveResultsButton({ results, answers }: SaveResultsButtonProps) 
           </p>
           <Link
             href="/results"
-            className="transition-smooth text-sm font-bold text-primary underline hover:no-underline"
+            className="transition-smooth text-sm font-bold text-link underline hover:no-underline"
           >
             View in My results →
           </Link>

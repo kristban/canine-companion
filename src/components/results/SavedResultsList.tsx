@@ -93,7 +93,7 @@ export function SavedResultsList({
                 <span className="flex-1 text-sm font-bold text-text">
                   {match.name}
                 </span>
-                <span className="rounded-full border-2 border-border bg-secondary px-2.5 py-0.5 text-xs font-extrabold text-text">
+                <span className="rounded-full border-2 border-border bg-secondary px-2.5 py-0.5 text-xs font-extrabold text-ink">
                   {match.matchPercent}% match
                 </span>
               </li>

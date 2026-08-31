@@ -49,7 +49,7 @@ export function Footer() {
                 <li key={link.label}>
                   <Link
                     href={link.href}
-                    className="transition-smooth text-sm text-muted hover:text-primary"
+                    className="transition-smooth text-sm text-muted hover:text-link"
                   >
                     {link.label}
                   </Link>
@@ -70,7 +70,7 @@ export function Footer() {
                 <li key={link.label}>
                   <Link
                     href={link.href}
-                    className="transition-smooth text-sm text-muted hover:text-primary"
+                    className="transition-smooth text-sm text-muted hover:text-link"
                   >
                     {link.label}
                   </Link>
@@ -87,7 +87,7 @@ export function Footer() {
               <li>
                 <a
                   href="mailto:hello@caninecompanion.app"
-                  className="transition-smooth break-words text-sm text-muted hover:text-primary"
+                  className="transition-smooth break-words text-sm text-muted hover:text-link"
                 >
                   hello@caninecompanion.app
                 </a>

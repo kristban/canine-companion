@@ -99,7 +99,7 @@ export function BreedShowcase({ breeds }: { breeds: Breed[] }) {
                 <h3 className="mt-3 font-display text-xl font-semibold tracking-tight text-text">
                   {breed.name}
                 </h3>
-                <p className="mt-1 text-sm font-bold text-primary">
+                <p className="mt-1 text-sm font-bold text-link">
                   {breed.tagline}
                 </p>
               </div>

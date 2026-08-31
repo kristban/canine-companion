@@ -53,13 +53,13 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
         <article className="mx-auto w-full max-w-3xl px-4 py-16 sm:px-6">
           <Link
             href="/guides"
-            className="transition-smooth text-sm font-bold text-muted hover:text-primary"
+            className="transition-smooth text-sm font-bold text-muted hover:text-link"
           >
             ← All guides
           </Link>
 
           <div className="mt-6">
-            <p className="text-xs font-extrabold uppercase tracking-wide text-primary">
+            <p className="text-xs font-extrabold uppercase tracking-wide text-link">
               {article.category} · {article.readTime}
             </p>
             <h1 className="mt-2 font-display text-3xl font-semibold tracking-tight text-text sm:text-4xl">

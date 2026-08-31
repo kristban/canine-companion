@@ -35,7 +35,7 @@ export default async function MyResultsPage() {
         <div className="mx-auto w-full max-w-3xl px-4 py-16 sm:px-6">
           <div className="mb-8">
             <h1 className="font-display text-4xl font-semibold tracking-tight text-text sm:text-5xl">
-              My <span className="text-primary">results</span>
+              My <span className="text-link">results</span>
             </h1>
             <p className="mt-3 max-w-2xl text-lg leading-relaxed text-muted">
               Quiz results you&apos;ve saved to your account.

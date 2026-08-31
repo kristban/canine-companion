@@ -42,7 +42,7 @@ export default async function BreedsPage() {
         <div className="mx-auto w-full max-w-5xl px-4 py-16 sm:px-6">
           <div className="text-center">
             <h1 className="font-display text-4xl font-semibold tracking-tight text-text sm:text-5xl">
-              Meet the <span className="text-primary">breeds</span>
+              Meet the <span className="text-link">breeds</span>
             </h1>
             {hasBreeds ? (
               <>

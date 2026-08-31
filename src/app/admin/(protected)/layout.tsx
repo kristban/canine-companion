@@ -68,7 +68,7 @@ export default async function ProtectedAdminLayout({
           <span>Admin console</span>
           <Link
             href="/"
-            className="transition-smooth font-bold hover:text-primary"
+            className="transition-smooth font-bold hover:text-link"
           >
             View public site ↗
           </Link>

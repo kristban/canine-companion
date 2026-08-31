@@ -174,7 +174,7 @@ export default async function ArticleDetailPage({
           Rendered the same way it appears on{" "}
           <Link
             href={`/guides/${article.id}`}
-            className="font-semibold text-primary hover:underline"
+            className="font-semibold text-link hover:underline"
           >
             /guides/{article.id}
           </Link>

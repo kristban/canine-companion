@@ -112,7 +112,7 @@ export function SignupForm() {
             {errors.name && (
               <p
                 id="signup-name-error"
-                className="mt-1.5 text-sm font-semibold text-red-600"
+                className="mt-1.5 text-sm font-semibold text-red-700"
               >
                 {errors.name}
               </p>
@@ -144,7 +144,7 @@ export function SignupForm() {
             {errors.email && (
               <p
                 id="signup-email-error"
-                className="mt-1.5 text-sm font-semibold text-red-600"
+                className="mt-1.5 text-sm font-semibold text-red-700"
               >
                 {errors.email}
               </p>
@@ -162,7 +162,7 @@ export function SignupForm() {
           {submitFailed && (
             <p
               role="alert"
-              className="text-center text-sm font-semibold text-red-600"
+              className="text-center text-sm font-semibold text-red-700"
             >
               Something went wrong. Please try again.
             </p>
@@ -185,7 +185,7 @@ export function SignupForm() {
           {toastVisible && (
             <>
               <span
-                className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border-2 border-border bg-secondary text-sm font-bold text-text"
+                className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border-2 border-border bg-secondary text-sm font-bold text-ink"
                 aria-hidden="true"
               >
                 ✓

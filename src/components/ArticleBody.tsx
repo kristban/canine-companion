@@ -26,7 +26,7 @@ const components: Components = {
   a: ({ children, href }) => (
     <Link
       href={href ?? "#"}
-      className="transition-smooth font-semibold text-primary underline decoration-2 underline-offset-2 hover:no-underline"
+      className="transition-smooth font-semibold text-link underline decoration-2 underline-offset-2 hover:no-underline"
     >
       {children}
     </Link>

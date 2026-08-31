@@ -35,11 +35,11 @@ export default async function GuidesPage() {
       <main className="flex-1 bg-grid-pattern bg-background">
         <div className="mx-auto w-full max-w-5xl px-4 py-16 sm:px-6">
           <div className="text-center">
-            <p className="text-sm font-extrabold uppercase tracking-wide text-primary">
+            <p className="text-sm font-extrabold uppercase tracking-wide text-link">
               Everything they don&apos;t tell you at the pet shop
             </p>
             <h1 className="mt-2 font-display text-4xl font-semibold tracking-tight text-text sm:text-5xl">
-              Paws &amp; <span className="text-primary">Pointers</span>
+              Paws &amp; <span className="text-link">Pointers</span>
             </h1>
             <p className="mx-auto mt-4 max-w-2xl text-lg leading-relaxed text-muted">
               Honest guides for Irish dog owners — the licence you need, the

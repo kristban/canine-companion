@@ -10,8 +10,46 @@
   --color-text: #17130f;
   --color-muted: #6b6156;
   --color-border: #17130f;
+  /* Link/accent text color. Same as --color-primary in light mode (kept as
+     its own token because dark mode needs a brighter value here than the
+     one that works for bg-primary + white button text — see .dark below). */
+  --color-link: #aa4308;
+  /* Constant near-black ink, deliberately NOT overridden in .dark. Used for
+     text sitting on solid bg-secondary/bg-accent chips and badges, which
+     stay bright in both themes — see design-system.md's "dark text on
+     secondary/accent" pairing rule, which text-ink preserves regardless of
+     the page theme. */
+  --color-ink: #17130f;
   --font-sans: var(--font-nunito);
   --font-display: var(--font-fredoka);
+}
+
+:root {
+  color-scheme: light;
+}
+
+.dark {
+  color-scheme: dark;
+  --color-background: #17130f;
+  --color-background-alt: #201a14;
+  --color-surface: #241d16;
+  --color-text: #f7f0e2;
+  --color-muted: #b8ab99;
+  --color-border: #f7f0e2;
+  --color-link: #ff8a3d;
+  /* --color-primary/secondary/accent/ink are intentionally left unchanged:
+     they're used as solid chip/button backgrounds paired with fixed
+     white/ink text (self-contained pairs that don't depend on page
+     background), so they stay correct in both themes. */
+
+  /* The built-in red palette is used only for error/danger UI (banners,
+     delete actions) — remap it here so those stay legible against a dark
+     page instead of floating as a stark light-mode box. */
+  --color-red-50: #4d1a1a;
+  --color-red-100: #4d1a1a;
+  --color-red-500: #f87171;
+  --color-red-700: #fca5a5;
+  --color-red-800: #fecaca;
 }
 
 body {

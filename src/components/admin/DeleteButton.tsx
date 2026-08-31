@@ -56,7 +56,7 @@ export function DeleteButton({ action, id, itemLabel }: DeleteButtonProps) {
           type="button"
           onClick={() => setConfirming(false)}
           disabled={isPending}
-          className="transition-smooth text-sm font-bold text-muted hover:text-primary disabled:opacity-70"
+          className="transition-smooth text-sm font-bold text-muted hover:text-link disabled:opacity-70"
         >
           Cancel
         </button>

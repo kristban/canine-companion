@@ -31,7 +31,7 @@ export function FieldShell({ id, label, error, hint, children }: ShellProps) {
       {error ? (
         <p
           id={`${id}-error`}
-          className="mt-1.5 text-sm font-semibold text-red-600"
+          className="mt-1.5 text-sm font-semibold text-red-700"
         >
           {error}
         </p>
@@ -214,7 +214,7 @@ export function NumberField({
       {error ? (
         <p
           id={`${id}-error`}
-          className="mt-1.5 text-sm font-semibold text-red-600"
+          className="mt-1.5 text-sm font-semibold text-red-700"
         >
           {error}
         </p>

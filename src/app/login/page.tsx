@@ -72,7 +72,7 @@ export default async function LoginPage({
 
         <Link
           href="/"
-          className="transition-smooth mt-6 block text-center text-sm font-bold text-muted hover:text-primary"
+          className="transition-smooth mt-6 block text-center text-sm font-bold text-muted hover:text-link"
         >
           ← Back to home
         </Link>
