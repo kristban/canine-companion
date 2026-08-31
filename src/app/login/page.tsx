@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getSessionUser } from "@/lib/auth/requireUser";
@@ -6,6 +7,12 @@ import { GoogleSignInButton } from "@/components/auth/GoogleSignInButton";
 // Public sign-in page. The redirect target for requireUser() when a signed-out
 // visitor deep-links into a per-user page (/account, /results). Everyday sign-in
 // happens straight from the nav; this page is the fallback landing spot.
+
+// Utility page, not content — noindex like /account and /results.
+export const metadata: Metadata = {
+  title: "Sign in — Canine Companion",
+  robots: { index: false, follow: false },
+};
 
 export const dynamic = "force-dynamic";
 

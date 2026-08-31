@@ -12,6 +12,7 @@ import type { ReactNode } from "react";
 // + the (protected) layout + per-action requireAdmin checks).
 export const metadata: Metadata = {
   title: "Admin — Canine Companion",
+  description: "Manage breeds, articles, and newsletter signups.",
   robots: { index: false, follow: false },
 };
 

@@ -17,7 +17,12 @@ export async function generateMetadata({
   const { slug } = await params;
   const articles = await getArticles();
   const article = articles.find((a) => a.id === slug);
-  if (!article) return {};
+  if (!article) {
+    return {
+      title: "Guide Not Found — Canine Companion",
+      robots: { index: false, follow: false },
+    };
+  }
   return {
     title: `${article.title} — Paws & Pointers`,
     description: article.excerpt,
