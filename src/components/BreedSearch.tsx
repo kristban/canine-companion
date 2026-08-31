@@ -3,6 +3,7 @@
 import { useId, useMemo, useState } from "react";
 import { Breed, BREED_GROUPS } from "@/lib/breeds";
 import { searchBreeds } from "@/lib/breedSearch";
+import { useReveal } from "./Reveal";
 
 // A few at-a-glance traits per card, mirroring the bars in BreedShowcase.
 const TRAIT_BARS: { key: keyof Breed; label: string; icon: string }[] = [
@@ -21,8 +22,10 @@ function BreedGridItem({
   breed: Breed;
   headingLevel: "h2" | "h3";
 }) {
+  const { ref, className: revealClassName } = useReveal<HTMLLIElement>();
+
   return (
-    <li className="flex">
+    <li ref={ref} className={`flex ${revealClassName}`}>
       <article className="transition-smooth flex flex-1 flex-col gap-4 rounded-3xl border-3 border-border bg-surface p-6 shadow-hard hover:-translate-y-1">
         <div className="flex items-center gap-4">
           <span

@@ -80,15 +80,20 @@ export function Results({ results, answers, onRestart }: ResultsProps) {
 
       <div className="flex flex-col gap-4">
         {topResults.map((result, index) => (
-          <BreedCard
+          <div
             key={result.breed.id}
-            result={result}
-            rank={index}
-            reason={summarizeGoodMatch(
-              result.breed,
-              explainMatch(result.breed, answers),
-            )}
-          />
+            className="animate-reveal-rise"
+            style={{ animationDelay: `${index * 90}ms` }}
+          >
+            <BreedCard
+              result={result}
+              rank={index}
+              reason={summarizeGoodMatch(
+                result.breed,
+                explainMatch(result.breed, answers),
+              )}
+            />
+          </div>
         ))}
       </div>
 
@@ -106,16 +111,21 @@ export function Results({ results, answers, onRestart }: ResultsProps) {
           </p>
           <div className="mt-4 flex flex-col gap-4">
             {worstResults.map((result, index) => (
-              <BreedCard
+              <div
                 key={result.breed.id}
-                result={result}
-                rank={index}
-                variant="avoid"
-                reason={summarizePoorMatch(
-                  result.breed,
-                  explainMatch(result.breed, answers),
-                )}
-              />
+                className="animate-reveal-rise"
+                style={{ animationDelay: `${index * 90}ms` }}
+              >
+                <BreedCard
+                  result={result}
+                  rank={index}
+                  variant="avoid"
+                  reason={summarizePoorMatch(
+                    result.breed,
+                    explainMatch(result.breed, answers),
+                  )}
+                />
+              </div>
             ))}
           </div>
         </section>

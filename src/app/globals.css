@@ -100,4 +100,86 @@ body {
   .shadow-hard-sm {
     box-shadow: 3px 3px 0 0 var(--color-border);
   }
+
+  /* Scroll-triggered entrance (see Reveal.tsx): starts hidden, a client
+     component flips on .reveal-visible once the element enters the
+     viewport. */
+  .reveal {
+    opacity: 0;
+    transform: translateY(1rem);
+    transition:
+      opacity 500ms ease-out,
+      transform 500ms ease-out;
+  }
+
+  .reveal-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* Mount-triggered version of the same look, for content that's already
+     near the top of the page (HowItWorks) or appears all at once when a
+     view swaps in (Results) rather than being scrolled to. */
+  .animate-reveal-rise {
+    animation: reveal-rise 500ms ease-out both;
+  }
+
+  .animate-quiz-step-forward {
+    animation: quiz-step-in-forward 320ms ease-out both;
+  }
+
+  .animate-quiz-step-back {
+    animation: quiz-step-in-back 320ms ease-out both;
+  }
+}
+
+@keyframes reveal-rise {
+  from {
+    opacity: 0;
+    transform: translateY(1rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes quiz-step-in-forward {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes quiz-step-in-back {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Global reduced-motion kill switch: collapses every transition/animation
+   on the site to effectively instant rather than requiring each animated
+   component to check prefers-reduced-motion itself. The negative
+   animation-delay skips straight past the "from" keyframe so nothing
+   flashes its hidden/offset starting state first. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    animation-duration: 0.01ms !important;
+    animation-delay: -0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    transition-delay: 0s !important;
+    scroll-behavior: auto !important;
+  }
 }

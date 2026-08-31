@@ -11,6 +11,7 @@ interface QuizProps {
 export function Quiz({ onComplete, onCancel }: QuizProps) {
   const [step, setStep] = useState(0);
   const [answers, setAnswers] = useState<QuizOption[]>([]);
+  const [direction, setDirection] = useState<"forward" | "back">("forward");
 
   const question = questions[step];
   const progress = Math.round((step / questions.length) * 100);
@@ -23,6 +24,7 @@ export function Quiz({ onComplete, onCancel }: QuizProps) {
     if (step === questions.length - 1) {
       onComplete(next);
     } else {
+      setDirection("forward");
       setStep(step + 1);
     }
   }
@@ -31,6 +33,7 @@ export function Quiz({ onComplete, onCancel }: QuizProps) {
     if (step === 0) {
       onCancel();
     } else {
+      setDirection("back");
       setStep(step - 1);
     }
   }
@@ -59,37 +62,46 @@ export function Quiz({ onComplete, onCancel }: QuizProps) {
         </div>
       </div>
 
-      <h2 className="font-display text-2xl font-semibold tracking-tight text-text sm:text-3xl">
-        {question.question}
-      </h2>
-      <p className="mt-2 text-muted">{question.helperText}</p>
+      <div
+        key={step}
+        className={
+          direction === "forward"
+            ? "animate-quiz-step-forward"
+            : "animate-quiz-step-back"
+        }
+      >
+        <h2 className="font-display text-2xl font-semibold tracking-tight text-text sm:text-3xl">
+          {question.question}
+        </h2>
+        <p className="mt-2 text-muted">{question.helperText}</p>
 
-      <fieldset className="mt-8 flex flex-col gap-3">
-        <legend className="sr-only">{question.question}</legend>
-        {question.options.map((option) => {
-          const isSelected = selectedOptionId === option.id;
-          return (
-            <button
-              key={option.id}
-              type="button"
-              onClick={() => selectOption(option)}
-              aria-pressed={isSelected}
-              className={`transition-smooth flex items-center gap-4 rounded-2xl border-2 border-border px-5 py-4 text-left hover:-translate-y-0.5 hover:shadow-hard-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary ${
-                isSelected
-                  ? "bg-secondary/40 shadow-hard-sm"
-                  : "bg-surface"
-              }`}
-            >
-              <span className="text-2xl" aria-hidden="true">
-                {option.icon}
-              </span>
-              <span className="text-base font-semibold text-text sm:text-lg">
-                {option.label}
-              </span>
-            </button>
-          );
-        })}
-      </fieldset>
+        <fieldset className="mt-8 flex flex-col gap-3">
+          <legend className="sr-only">{question.question}</legend>
+          {question.options.map((option) => {
+            const isSelected = selectedOptionId === option.id;
+            return (
+              <button
+                key={option.id}
+                type="button"
+                onClick={() => selectOption(option)}
+                aria-pressed={isSelected}
+                className={`transition-smooth flex items-center gap-4 rounded-2xl border-2 border-border px-5 py-4 text-left hover:-translate-y-0.5 hover:shadow-hard-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary ${
+                  isSelected
+                    ? "bg-secondary/40 shadow-hard-sm"
+                    : "bg-surface"
+                }`}
+              >
+                <span className="text-2xl" aria-hidden="true">
+                  {option.icon}
+                </span>
+                <span className="text-base font-semibold text-text sm:text-lg">
+                  {option.label}
+                </span>
+              </button>
+            );
+          })}
+        </fieldset>
+      </div>
 
       <button
         type="button"

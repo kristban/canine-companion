@@ -3,6 +3,7 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { SignupForm } from "@/components/SignupForm";
 import { ArticleCard } from "@/components/ArticleCard";
+import { Reveal } from "@/components/Reveal";
 import { getArticles } from "@/lib/getArticles";
 
 export const metadata: Metadata = {
@@ -68,7 +69,9 @@ export default async function GuidesPage() {
                     </h2>
                     <div className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
                       {categoryArticles.map((article) => (
-                        <ArticleCard key={article.id} article={article} />
+                        <Reveal key={article.id} className="h-full">
+                          <ArticleCard article={article} />
+                        </Reveal>
                       ))}
                     </div>
                   </section>
