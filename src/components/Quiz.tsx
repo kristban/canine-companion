@@ -6,11 +6,20 @@ import { questions, QuizOption } from "@/lib/questions";
 interface QuizProps {
   onComplete: (answers: QuizOption[]) => void;
   onCancel: () => void;
+  // Lets Results.tsx send the visitor back to their last answered question
+  // (to tweak it) instead of always restarting the whole quiz from scratch.
+  initialAnswers?: QuizOption[];
+  initialStep?: number;
 }
 
-export function Quiz({ onComplete, onCancel }: QuizProps) {
-  const [step, setStep] = useState(0);
-  const [answers, setAnswers] = useState<QuizOption[]>([]);
+export function Quiz({
+  onComplete,
+  onCancel,
+  initialAnswers = [],
+  initialStep = 0,
+}: QuizProps) {
+  const [step, setStep] = useState(initialStep);
+  const [answers, setAnswers] = useState<QuizOption[]>(initialAnswers);
   const [direction, setDirection] = useState<"forward" | "back">("forward");
 
   const question = questions[step];

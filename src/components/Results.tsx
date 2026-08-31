@@ -13,9 +13,15 @@ interface ResultsProps {
   results: MatchResult[];
   answers: QuizOption[];
   onRestart: () => void;
+  onEditLastAnswer: () => void;
 }
 
-export function Results({ results, answers, onRestart }: ResultsProps) {
+export function Results({
+  results,
+  answers,
+  onRestart,
+  onEditLastAnswer,
+}: ResultsProps) {
   const topResults = results.slice(0, 5);
 
   // Only worth showing "probably not a fit" breeds when the quiz actually
@@ -139,6 +145,13 @@ export function Results({ results, answers, onRestart }: ResultsProps) {
           className="transition-smooth rounded-full border-2 border-border bg-primary px-8 py-3 text-base font-bold text-white shadow-hard-sm hover:-translate-y-0.5 hover:shadow-hard focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
         >
           Retake the quiz
+        </button>
+        <button
+          type="button"
+          onClick={onEditLastAnswer}
+          className="transition-smooth text-sm font-bold text-muted hover:text-link"
+        >
+          ← Back to your last answer
         </button>
       </div>
     </section>

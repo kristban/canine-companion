@@ -25,6 +25,10 @@ export function AppShell({
   const [view, setView] = useState<View>("landing");
   const [results, setResults] = useState<MatchResult[]>([]);
   const [answers, setAnswers] = useState<QuizOption[]>([]);
+  // Set only when returning to the quiz to edit an answer (as opposed to a
+  // full "Retake the quiz" restart), so Quiz knows to resume with the
+  // previous answers instead of starting blank.
+  const [resumeAtLastQuestion, setResumeAtLastQuestion] = useState(false);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -53,6 +57,16 @@ export function AppShell({
     setView("results");
   }
 
+  function handleRestart() {
+    setResumeAtLastQuestion(false);
+    setView("quiz");
+  }
+
+  function handleEditLastAnswer() {
+    setResumeAtLastQuestion(true);
+    setView("quiz");
+  }
+
   return (
     <div className="flex min-h-screen flex-col">
       <Header
@@ -71,13 +85,18 @@ export function AppShell({
           <Quiz
             onComplete={handleComplete}
             onCancel={() => setView("landing")}
+            initialAnswers={resumeAtLastQuestion ? answers : undefined}
+            initialStep={
+              resumeAtLastQuestion ? Math.max(0, answers.length - 1) : 0
+            }
           />
         )}
         {view === "results" && (
           <Results
             results={results}
             answers={answers}
-            onRestart={() => setView("quiz")}
+            onRestart={handleRestart}
+            onEditLastAnswer={handleEditLastAnswer}
           />
         )}
       </main>
