@@ -79,7 +79,7 @@ export function Footer() {
             </ul>
           </nav>
 
-          <address className="not-italic">
+          <address className="col-span-2 not-italic md:col-span-1">
             <h3 className="text-sm font-extrabold uppercase tracking-wide text-text">
               Contact
             </h3>
