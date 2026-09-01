@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Script from "next/script";
 import { Nunito, Fredoka } from "next/font/google";
 import { CookieConsent } from "@/components/CookieConsent";
 import { SessionProvider } from "@/components/SessionProvider";
@@ -52,6 +53,11 @@ export default function RootLayout({
     >
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
+        <Script
+          src="https://cloud.umami.is/script.js"
+          data-website-id="53491270-1c65-405f-9e5f-da7f593d9517"
+          strategy="afterInteractive"
+        />
       </head>
       <body className="min-h-full flex flex-col bg-background text-text">
         <SessionProvider>
