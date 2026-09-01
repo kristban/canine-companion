@@ -1,8 +1,9 @@
 "use client";
 
 import { useId, useMemo, useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
-import { Breed, BREED_GROUPS } from "@/lib/breeds";
+import { Breed, BREED_GROUPS, getBreedStickerUrl } from "@/lib/breeds";
 import { searchBreeds } from "@/lib/breedSearch";
 import { useReveal } from "./Reveal";
 import { CompareTray } from "./breeds/CompareTray";
@@ -60,10 +61,20 @@ function BreedGridItem({
       >
         <div className="flex items-center gap-4">
           <span
-            className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl border-2 border-border bg-secondary/40 text-4xl"
+            className="flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-2xl border-2 border-border bg-secondary/40 text-4xl"
             aria-hidden="true"
           >
-            {breed.emoji}
+            {getBreedStickerUrl(breed.id) ? (
+              <Image
+                src={getBreedStickerUrl(breed.id)!}
+                alt=""
+                width={128}
+                height={128}
+                className="h-full w-full object-contain"
+              />
+            ) : (
+              breed.emoji
+            )}
           </span>
           <div className="min-w-0">
             <Heading className="font-display text-xl font-semibold tracking-tight text-text">

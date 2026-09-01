@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
@@ -26,6 +27,14 @@ export default function NotFound() {
             <br />
             scent
           </span>
+          <Image
+            src="/stickers/shih-tzu-sticker.png"
+            alt=""
+            width={506}
+            height={880}
+            aria-hidden="true"
+            className="absolute -bottom-4 -left-12 h-20 w-auto -rotate-12 drop-shadow-[3px_3px_0_var(--color-border)] sm:-left-16 sm:h-24"
+          />
         </div>
 
         <h1 className="mt-8 font-display text-6xl font-semibold tracking-tight text-text sm:text-7xl">

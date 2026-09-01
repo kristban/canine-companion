@@ -208,6 +208,20 @@ const TRAIT_HIGHLIGHT_PHRASES: Record<TraitKey, { high: string; low: string }> =
  * midpoint of 3) and phrased via `TRAIT_HIGHLIGHT_PHRASES`. Traits scored
  * exactly 3 are unremarkable and never included.
  */
+/**
+ * Hand-drawn-sticker cutouts for the handful of breeds we have real photo
+ * subjects for (see public/stickers/). Everything else falls back to
+ * breed.emoji — see getBreedStickerUrl.
+ */
+const BREED_STICKERS: Partial<Record<string, string>> = {
+  "shih-tzu": "/stickers/shih-tzu-sticker.png",
+  "old-english-sheepdog": "/stickers/sheepdog-sticker.png",
+};
+
+export function getBreedStickerUrl(breedId: string): string | undefined {
+  return BREED_STICKERS[breedId];
+}
+
 export function getBreedHighlights(breed: Breed, max = 3): string[] {
   return TRAIT_FIELDS.map((field) => breed[field.key])
     .map((value, index) => ({ key: TRAIT_FIELDS[index].key, value }))

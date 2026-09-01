@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Header } from "@/components/Header";
@@ -9,6 +10,7 @@ import {
   TRAIT_FIELDS,
   breedGroupLabel,
   getBreedHighlights,
+  getBreedStickerUrl,
 } from "@/lib/breeds";
 import { getBreeds } from "@/lib/getBreeds";
 
@@ -58,6 +60,7 @@ export default async function BreedPage({ params }: BreedPageProps) {
 
   const group = BREED_GROUPS.find((g) => g.value === breed.group);
   const highlights = getBreedHighlights(breed);
+  const stickerUrl = getBreedStickerUrl(breed.id);
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -91,10 +94,20 @@ export default async function BreedPage({ params }: BreedPageProps) {
 
             <div className="flex items-center gap-4">
               <span
-                className="flex h-20 w-20 shrink-0 items-center justify-center rounded-2xl border-2 border-border bg-secondary/40 text-5xl"
+                className="flex h-20 w-20 shrink-0 items-center justify-center overflow-hidden rounded-2xl border-2 border-border bg-secondary/40 text-5xl"
                 aria-hidden="true"
               >
-                {breed.emoji}
+                {stickerUrl ? (
+                  <Image
+                    src={stickerUrl}
+                    alt=""
+                    width={160}
+                    height={160}
+                    className="h-full w-full object-contain"
+                  />
+                ) : (
+                  breed.emoji
+                )}
               </span>
               <div className="min-w-0">
                 <h1 className="font-display text-3xl font-semibold tracking-tight text-text sm:text-4xl">

@@ -57,6 +57,22 @@ export function Landing({ onStart, breeds, articles }: LandingProps) {
                 <br />
                 quiz
               </span>
+              <Image
+                src="/stickers/shih-tzu-sticker.png"
+                alt=""
+                width={506}
+                height={880}
+                aria-hidden="true"
+                className="absolute -bottom-6 -left-6 h-24 w-auto -rotate-6 drop-shadow-[4px_4px_0_var(--color-border)] sm:-left-10 sm:h-28"
+              />
+              <Image
+                src="/stickers/sheepdog-sticker.png"
+                alt=""
+                width={516}
+                height={1100}
+                aria-hidden="true"
+                className="absolute -bottom-8 -right-6 h-32 w-auto rotate-6 drop-shadow-[4px_4px_0_var(--color-border)] sm:-right-10 sm:h-40"
+              />
             </div>
           </div>
         </div>
