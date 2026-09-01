@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 
 export default function TermsOfServicePage() {
   return (
-    <LegalPage title="Terms of Service" updated="July 16, 2026">
+    <LegalPage title="Terms of Service" updated="September 1, 2026">
       <section>
         <h2>Acceptance of terms</h2>
         <p>
@@ -36,6 +36,32 @@ export default function TermsOfServicePage() {
           is&rdquo; for general guidance. We don&apos;t guarantee their
           accuracy or completeness, and we recommend talking to a vet,
           breeder, or shelter before bringing a dog home.
+        </p>
+      </section>
+
+      <section>
+        <h2>Accounts</h2>
+        <p>
+          The quiz never requires an account. Signing in with Google is
+          optional and only needed to save quiz results or set up a public
+          profile. You&apos;re responsible for the security of your Google
+          account, and for keeping any information you provide accurate. We
+          may suspend or remove an account that violates these terms.
+        </p>
+      </section>
+
+      <section>
+        <h2>Public profiles</h2>
+        <p>
+          If you set up a profile, your username, display name, avatar, and
+          bio are visible to anyone who visits your profile page — don&apos;t
+          include anything you&apos;d rather keep private. Don&apos;t
+          impersonate another person or brand, and don&apos;t use your
+          username, display name, or bio for content that&apos;s illegal,
+          abusive, or infringes someone else&apos;s rights. We may remove
+          profile content or suspend an account that breaks this rule, and we
+          don&apos;t guarantee that any particular username stays available or
+          reserved for you.
         </p>
       </section>
 

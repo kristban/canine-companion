@@ -10,13 +10,13 @@ export const metadata: Metadata = {
 
 export default function CookiePolicyPage() {
   return (
-    <LegalPage title="Cookie Policy" updated="July 16, 2026">
+    <LegalPage title="Cookie Policy" updated="September 1, 2026">
       <section>
         <h2>What we use</h2>
         <p>
-          Canine Companion uses your browser&apos;s local storage — not
-          third-party tracking cookies — to remember one thing: whether
-          you&apos;ve accepted or declined our cookie banner. That&apos;s it.
+          Canine Companion uses your browser&apos;s local storage and, if you
+          sign in, a session cookie — not third-party tracking cookies or
+          scripts. Everything we store is listed below.
         </p>
       </section>
 
@@ -24,16 +24,39 @@ export default function CookiePolicyPage() {
         <h2>Strictly necessary storage</h2>
         <ul>
           <li>
-            <strong>Cookie consent choice</strong> — remembers your
-            accept/decline decision so we don&apos;t show the banner on every
-            visit.
+            <strong>Cookie consent choice</strong> (local storage) —
+            remembers your accept/decline decision so we don&apos;t show the
+            banner on every visit.
+          </li>
+          <li>
+            <strong>Sign-in session</strong> (cookie) — set only if you sign
+            in with Google, this keeps you signed in between visits so you can
+            save results or edit your profile. Nothing is set if you never
+            sign in.
           </li>
         </ul>
         <p className="mt-3">
           This is considered strictly necessary storage under GDPR and
-          similar regulations, since it&apos;s required to remember your own
-          preference about cookies.
+          similar regulations, since each item is required either to remember
+          your own preference about cookies or to keep a feature you opted
+          into (staying signed in) working.
         </p>
+      </section>
+
+      <section>
+        <h2>Preference and functional storage</h2>
+        <ul>
+          <li>
+            <strong>Theme preference</strong> (local storage) — remembers
+            whether you chose light or dark mode.
+          </li>
+          <li>
+            <strong>In-progress quiz answers</strong> (session storage) —
+            lets you refresh the page or come back after signing in without
+            losing your progress. Cleared when you finish or restart the quiz,
+            and when you close the tab.
+          </li>
+        </ul>
       </section>
 
       <section>
@@ -41,17 +64,24 @@ export default function CookiePolicyPage() {
         <p>
           We don&apos;t use analytics cookies, advertising cookies, or any
           third-party tracking scripts. Your quiz answers never leave your
-          browser.
+          browser unless you sign in and choose to save a result (see our{" "}
+          <a
+            href="/privacy"
+            className="font-semibold text-link underline underline-offset-2 hover:text-secondary"
+          >
+            Privacy Policy
+          </a>
+          ).
         </p>
       </section>
 
       <section>
         <h2>Managing storage</h2>
         <p>
-          You can clear this at any time through your browser&apos;s site
-          settings (usually under &ldquo;Cookies and site data&rdquo; or
-          &ldquo;Privacy&rdquo;). Clearing it will simply bring the consent
-          banner back on your next visit.
+          You can clear any of this at any time through your browser&apos;s
+          site settings (usually under &ldquo;Cookies and site data&rdquo; or
+          &ldquo;Privacy&rdquo;). Clearing it will bring the consent banner
+          back and, if you were signed in, sign you out.
         </p>
       </section>
 
