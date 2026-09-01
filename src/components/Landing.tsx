@@ -62,7 +62,7 @@ export function Landing({ onStart, breeds, articles }: LandingProps) {
         </div>
       </section>
 
-      <HowItWorks />
+      <HowItWorks breedCount={breeds.length} />
       <BreedShowcase breeds={breeds} />
       <GuidesPreview articles={articles} />
     </div>

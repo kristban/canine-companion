@@ -1,34 +1,38 @@
+import { questions } from "@/lib/questions";
+
 interface Step {
   icon: string;
   title: string;
   description: string;
 }
 
-const steps: Step[] = [
-  {
-    icon: "📋",
-    title: "Answer a few questions",
-    description:
-      "Tell us about your home, activity level, experience, and household in a quick 9-question quiz.",
-  },
-  {
-    icon: "🧠",
-    title: "We score every breed",
-    description:
-      "Your answers are weighed against traits like energy, grooming needs, and temperament for 20 popular breeds.",
-  },
-  {
-    icon: "🐾",
-    title: "Meet your matches",
-    description:
-      "See your best-fitting breeds ranked by match percentage, with details on what makes each one a good fit.",
-  },
-];
+interface HowItWorksProps {
+  breedCount: number;
+}
 
 const STEP_COLORS = ["bg-secondary", "bg-primary", "bg-accent"];
 const STEP_TEXT_COLORS = ["text-ink", "text-white", "text-ink"];
 
-export function HowItWorks() {
+export function HowItWorks({ breedCount }: HowItWorksProps) {
+  const steps: Step[] = [
+    {
+      icon: "📋",
+      title: "Answer a few questions",
+      description: `Tell us about your home, activity level, experience, and household in a quick ${questions.length}-question quiz.`,
+    },
+    {
+      icon: "🧠",
+      title: "We score every breed",
+      description: `Your answers are weighed against traits like energy, grooming needs, and temperament for ${breedCount} popular breeds.`,
+    },
+    {
+      icon: "🐾",
+      title: "Meet your matches",
+      description:
+        "See your best-fitting breeds ranked by match percentage, with details on what makes each one a good fit.",
+    },
+  ];
+
   return (
     <section
       aria-labelledby="how-it-works-heading"
