@@ -1345,3 +1345,43 @@ Lead near livestock, always. Check beach bye-laws before you go. Stay out of dis
 
 **Sources:** [Citizens Information — Dog licences and ownership](https://www.citizensinformation.ie/en/environment/pets-and-wildlife/control-of-dogs/), [Irish Farmers Journal — Dog owners'' responsibility to prevent livestock worrying](https://www.farmersjournal.ie/news/opinion/legal-queries-dog-owners-responsibility-to-prevent-livestock-worrying-156043), [RTÉ — Sheep farmers call for more supports over dog attacks](https://www.rte.ie/news/2026/0215/1558566-sheep-dog-attacks/)', '2026-08-13')
 on conflict (id) do nothing;
+
+-- ---------------------------------------------------------------------------
+-- Table: user_roles  (role data, synced from the admin allowlist)
+--
+-- A DB-backed reflection of who's an admin, alongside the identity data in
+-- `profiles`. This is deliberately NOT the authorization boundary: /admin
+-- access is still gated by ADMIN_ALLOWED_EMAILS (see
+-- src/lib/auth/allowlist.ts and docs/architecture.md), because that check
+-- fails closed and doesn't depend on a row existing here. This table exists
+-- so "role" is real, queryable data instead of only living in an env var —
+-- it's (re)synced by the OAuth callback on every sign-in
+-- (src/app/auth/callback/route.ts) via the service-role key, for BOTH the
+-- admin and public login flows.
+--
+-- No insert/update/delete privilege is granted to anon/authenticated — only
+-- the service-role key (which bypasses RLS) can write a role, so a signed-in
+-- user can never elevate their own role through the public API. A user may
+-- only SELECT their own row.
+-- ---------------------------------------------------------------------------
+create table if not exists public.user_roles (
+  user_id    uuid        primary key references auth.users(id) on delete cascade,
+  role       text        not null default 'user' check (role in ('user', 'admin')),
+  updated_at timestamptz not null default now()
+);
+
+drop trigger if exists user_roles_set_updated_at on public.user_roles;
+create trigger user_roles_set_updated_at
+  before update on public.user_roles
+  for each row execute function public.set_updated_at();
+
+alter table public.user_roles enable row level security;
+
+grant select on table public.user_roles to authenticated;
+
+drop policy if exists "Users read own role" on public.user_roles;
+create policy "Users read own role"
+  on public.user_roles
+  for select
+  to authenticated
+  using (auth.uid() = user_id);

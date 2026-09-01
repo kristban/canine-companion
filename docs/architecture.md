@@ -128,6 +128,20 @@ client + `getSessionUser` in `src/lib/auth/requireUser.ts`). Google's OAuth
 Client ID/Secret live in the Supabase dashboard, not in app env; the app needs
 the Supabase URL/anon key plus `ADMIN_ALLOWED_EMAILS`.
 
+### Roles are a DB reflection, not the boundary
+
+The `user_roles` table (`supabase/schema.sql`) mirrors the allowlist decision
+as real, queryable data (`role: 'user' | 'admin'`) — `src/lib/auth/role.ts`.
+The OAuth callback re-syncs it on **every** sign-in (`syncUserRole()`, via the
+service-role key, since users have no write privilege on this table — see its
+RLS policies), covering both the admin and public login flows and picking up
+allowlist changes on the user's next sign-in. `/account` reads it back
+(`getUserRole()`, RLS-scoped to the caller's own row) to show a Member/Admin
+badge. **This table is deliberately not consulted by `requireAdmin()` or the
+proxy** — those keep checking `ADMIN_ALLOWED_EMAILS` directly, because that
+check fails closed and doesn't depend on a sync having already run. Treat
+`user_roles` as a display/query convenience, never as an authorization check.
+
 ## Public authentication (Google login for visitors)
 
 Separate from the admin gate: any visitor can sign in with Google. **The quiz is

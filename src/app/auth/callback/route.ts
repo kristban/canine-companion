@@ -10,6 +10,8 @@
 
 import { NextResponse, type NextRequest } from "next/server";
 import { createServerClient } from "@supabase/ssr";
+import { isEmailAllowed } from "@/lib/auth/allowlist";
+import { syncUserRole } from "@/lib/auth/role";
 
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const SUPABASE_ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
@@ -45,6 +47,17 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
 
   const { error } = await supabase.auth.exchangeCodeForSession(code);
   if (error) return loginWithError("auth_failed");
+
+  // Re-sync the DB-backed role reflection on every sign-in (see
+  // src/lib/auth/role.ts) — covers both the admin and public login flows,
+  // and re-derives correctly if the allowlist has changed since last time.
+  // getUser() revalidates the JWT rather than trusting the cookie.
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (user) {
+    await syncUserRole(user.id, isEmailAllowed(user.email) ? "admin" : "user");
+  }
 
   return response;
 }

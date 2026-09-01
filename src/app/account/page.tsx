@@ -7,6 +7,7 @@ import { requireUser } from "@/lib/auth/requireUser";
 import { createClient } from "@/lib/supabase/server";
 import { PROFILES_TABLE, type Profile } from "@/lib/profile";
 import { avatarUrlOf } from "@/lib/auth/user";
+import { getUserRole } from "@/lib/auth/role";
 import { PublicProfileForm } from "@/components/account/PublicProfileForm";
 import { AccountForm } from "@/components/account/AccountForm";
 
@@ -30,15 +31,26 @@ export default async function AccountPage() {
     .eq("id", user.id)
     .maybeSingle<Profile>();
 
+  const role = await getUserRole(user.id);
+
   return (
     <div className="flex min-h-screen flex-col">
       <Header />
       <main className="flex-1 bg-grid-pattern bg-background">
         <div className="mx-auto flex w-full max-w-2xl flex-col gap-8 px-4 py-16 sm:px-6">
           <div>
-            <h1 className="font-display text-4xl font-semibold tracking-tight text-text sm:text-5xl">
-              Your <span className="text-link">account</span>
-            </h1>
+            <div className="flex flex-wrap items-center gap-3">
+              <h1 className="font-display text-4xl font-semibold tracking-tight text-text sm:text-5xl">
+                Your <span className="text-link">account</span>
+              </h1>
+              <span
+                className={`inline-flex items-center rounded-full border-2 border-border px-3 py-1 text-xs font-extrabold uppercase tracking-wide text-text ${
+                  role === "admin" ? "bg-secondary" : "bg-background-alt"
+                }`}
+              >
+                {role === "admin" ? "Admin" : "Member"}
+              </span>
+            </div>
             <p className="mt-3 text-lg leading-relaxed text-muted">
               Manage your public profile and sign-in email.
             </p>

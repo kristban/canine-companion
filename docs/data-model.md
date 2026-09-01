@@ -193,6 +193,33 @@ service-role): `id` (uuid, PK, = `auth.uid()`), `username` (citext, unique,
   by `id`) alongside `AccountForm` (sign-in email only — display name lives on
   the profile instead, and saving it there also syncs
   `user_metadata.display_name` so the nav stays in sync without a separate
-  profile fetch). Types/constants live in `src/lib/profile.ts`. There's no
-  public profile *viewing* page (`/u/[username]`) yet — only the owner's own
-  edit view.
+  profile fetch). Types/constants live in `src/lib/profile.ts`. The public
+  *viewing* page is `/u/[username]` (`src/app/u/[username]/page.tsx`, a
+  standalone route hand-rolled like `/breeds` — read-only, server-fetched by
+  username via the anon key); `/account` links to the signed-in user's own
+  page once they've set a username. There's no directory/search across
+  profiles — only someone who already has the username (shared via that
+  link) can reach it.
+
+## `user_roles` (Supabase) — role data, synced from the admin allowlist
+
+A DB-backed reflection of admin status, separate from `profiles` because it's
+keyed by every signed-in user (`user_id`, PK, `references auth.users`), not
+just the ones who've set a username. Columns: `user_id`, `role` (`'user' |
+'admin'`, default `'user'`), `updated_at`.
+
+- **RLS:** `select` is restricted to the owner (`auth.uid() = user_id`). No
+  `insert`/`update`/`delete` policy is granted to `anon`/`authenticated` at
+  all — only the service-role key (bypasses RLS) can write a role, so a user
+  can never elevate their own role through the public API.
+- **Sync:** `src/app/auth/callback/route.ts` calls `syncUserRole()`
+  (`src/lib/auth/role.ts`) after every sign-in — admin and public login alike
+  — upserting `role` based on `isEmailAllowed()`
+  (`src/lib/auth/allowlist.ts`). This is a **reflection, not the
+  authorization boundary**: `requireAdmin()` and the proxy still check the
+  allowlist directly and never read this table — see
+  `docs/architecture.md` → "Roles are a DB reflection, not the boundary".
+  A role only updates on the affected user's next sign-in, not the instant
+  the allowlist changes.
+- **App UI:** `getUserRole()` reads the caller's own row (RLS-scoped, anon
+  key) to show a Member/Admin badge on `/account`.

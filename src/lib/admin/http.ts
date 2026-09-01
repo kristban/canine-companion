@@ -167,6 +167,26 @@ export async function insertRow<T>(
   return { ok: true, data: rows[0] };
 }
 
+/** INSERT a row, or UPDATE it in place if `conflictColumn` already exists. */
+export async function upsertRow<T>(
+  table: string,
+  body: Record<string, unknown>,
+  conflictColumn: string,
+): Promise<AdminResult<T>> {
+  const result = await request(table, {
+    method: "POST",
+    query: `on_conflict=${conflictColumn}`,
+    body,
+    prefer: "resolution=merge-duplicates,return=representation",
+  });
+  if (!result.ok) return result;
+  const rows = parseJson<T>(result.data.text);
+  if (rows.length === 0) {
+    return { ok: false, error: "The record was not saved." };
+  }
+  return { ok: true, data: rows[0] };
+}
+
 /** UPDATE rows matching `query` and return the updated row. */
 export async function updateRows<T>(
   table: string,
