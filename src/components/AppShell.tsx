@@ -12,6 +12,7 @@ import { Article } from "@/lib/articles";
 import { QuizOption } from "@/lib/questions";
 import { matchBreeds, MatchResult } from "@/lib/match";
 import { clearPendingResults, readPendingResults } from "@/lib/results";
+import { clearQuizProgress, readQuizProgress } from "@/lib/quizProgress";
 
 type View = "landing" | "quiz" | "results";
 
@@ -25,10 +26,10 @@ export function AppShell({
   const [view, setView] = useState<View>("landing");
   const [results, setResults] = useState<MatchResult[]>([]);
   const [answers, setAnswers] = useState<QuizOption[]>([]);
-  // Set only when returning to the quiz to edit an answer (as opposed to a
-  // full "Retake the quiz" restart), so Quiz knows to resume with the
-  // previous answers instead of starting blank.
-  const [resumeAtLastQuestion, setResumeAtLastQuestion] = useState(false);
+  // Set only when returning to the quiz to edit a specific answer (as
+  // opposed to a full "Retake the quiz" restart), so Quiz knows to resume at
+  // that question with the previous answers instead of starting blank.
+  const [resumeAtIndex, setResumeAtIndex] = useState<number | null>(null);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -48,22 +49,31 @@ export function AppShell({
       }
       clearPendingResults();
       window.history.replaceState(null, "", "/");
+      return;
+    }
+    // A plain reload/revisit with no query params: resume an in-progress
+    // quiz from sessionStorage rather than dropping back to the landing page.
+    const saved = readQuizProgress();
+    if (saved && (saved.step > 0 || saved.answers.length > 0)) {
+      setView("quiz");
     }
   }, []);
 
   function handleComplete(quizAnswers: QuizOption[]) {
+    clearQuizProgress();
     setAnswers(quizAnswers);
     setResults(matchBreeds(quizAnswers, breeds));
     setView("results");
   }
 
   function handleRestart() {
-    setResumeAtLastQuestion(false);
+    clearQuizProgress();
+    setResumeAtIndex(null);
     setView("quiz");
   }
 
-  function handleEditLastAnswer() {
-    setResumeAtLastQuestion(true);
+  function handleEditAnswer(index: number) {
+    setResumeAtIndex(index);
     setView("quiz");
   }
 
@@ -84,11 +94,12 @@ export function AppShell({
         {view === "quiz" && (
           <Quiz
             onComplete={handleComplete}
-            onCancel={() => setView("landing")}
-            initialAnswers={resumeAtLastQuestion ? answers : undefined}
-            initialStep={
-              resumeAtLastQuestion ? Math.max(0, answers.length - 1) : 0
-            }
+            onCancel={() => {
+              clearQuizProgress();
+              setView("landing");
+            }}
+            initialAnswers={resumeAtIndex !== null ? answers : undefined}
+            initialStep={resumeAtIndex ?? 0}
           />
         )}
         {view === "results" && (
@@ -96,7 +107,7 @@ export function AppShell({
             results={results}
             answers={answers}
             onRestart={handleRestart}
-            onEditLastAnswer={handleEditLastAnswer}
+            onEditAnswer={handleEditAnswer}
           />
         )}
       </main>

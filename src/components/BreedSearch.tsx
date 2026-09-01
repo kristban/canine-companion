@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Breed, BREED_GROUPS } from "@/lib/breeds";
 import { searchBreeds } from "@/lib/breedSearch";
 import { useReveal } from "./Reveal";
+import { CompareTray } from "./breeds/CompareTray";
 
 // A few at-a-glance traits per card, mirroring the bars in BreedShowcase.
 const TRAIT_BARS: { key: keyof Breed; label: string; icon: string }[] = [
@@ -13,20 +14,46 @@ const TRAIT_BARS: { key: keyof Breed; label: string; icon: string }[] = [
   { key: "trainability", label: "Trainability", icon: "🎓" },
 ];
 
+const MAX_COMPARE = 3;
+
 // A single breed card, used both by the grouped browse view (nested under a
 // group's <h2>, so the card name is an <h3>) and by flat search results
 // (no group heading above it, so the card name is an <h2>).
 function BreedGridItem({
   breed,
   headingLevel: Heading,
+  selected,
+  canSelectMore,
+  onToggleCompare,
 }: {
   breed: Breed;
   headingLevel: "h2" | "h3";
+  selected: boolean;
+  canSelectMore: boolean;
+  onToggleCompare: (id: string) => void;
 }) {
   const { ref, className: revealClassName } = useReveal<HTMLLIElement>();
 
   return (
-    <li ref={ref} className={`flex ${revealClassName}`}>
+    <li ref={ref} className={`relative flex ${revealClassName}`}>
+      <button
+        type="button"
+        onClick={() => onToggleCompare(breed.id)}
+        disabled={!selected && !canSelectMore}
+        aria-pressed={selected}
+        aria-label={
+          selected
+            ? `Remove ${breed.name} from comparison`
+            : `Add ${breed.name} to comparison`
+        }
+        className={`transition-smooth absolute right-4 top-4 z-10 flex h-8 items-center gap-1 rounded-full border-2 border-border px-3 text-xs font-bold shadow-hard-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:cursor-not-allowed disabled:opacity-40 ${
+          selected
+            ? "bg-primary text-white"
+            : "bg-surface text-text hover:-translate-y-0.5"
+        }`}
+      >
+        {selected ? "✓ Compare" : "+ Compare"}
+      </button>
       <Link
         href={`/breeds/${breed.id}`}
         className="transition-smooth flex flex-1 flex-col gap-4 rounded-3xl border-3 border-border bg-surface p-6 shadow-hard hover:-translate-y-1 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
@@ -102,7 +129,16 @@ interface BreedSearchProps {
  */
 export function BreedSearch({ breeds, grouped, ungrouped }: BreedSearchProps) {
   const [query, setQuery] = useState("");
+  const [compareIds, setCompareIds] = useState<string[]>([]);
   const inputId = useId();
+
+  function toggleCompare(id: string) {
+    setCompareIds((current) => {
+      if (current.includes(id)) return current.filter((x) => x !== id);
+      if (current.length >= MAX_COMPARE) return current;
+      return [...current, id];
+    });
+  }
 
   const trimmed = query.trim();
   const searching = trimmed.length > 0;
@@ -169,14 +205,47 @@ export function BreedSearch({ breeds, grouped, ungrouped }: BreedSearchProps) {
         </p>
       </div>
 
+      {!searching && (grouped.length > 1 || ungrouped.length > 0) && (
+        <nav
+          aria-label="Jump to breed group"
+          className="sticky top-20 z-10 mt-8 overflow-x-auto rounded-full border-2 border-border bg-background/95 p-1.5 shadow-hard-sm backdrop-blur"
+        >
+          <div className="flex w-max gap-1.5">
+            {grouped.map(({ group, breeds: groupBreeds }) => (
+              <a
+                key={group.value}
+                href={`#group-${group.value}`}
+                className="transition-smooth flex shrink-0 items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-bold text-text hover:bg-secondary/40"
+              >
+                <span aria-hidden="true">{group.emoji}</span>
+                {group.label}
+                <span className="text-muted">({groupBreeds.length})</span>
+              </a>
+            ))}
+            {ungrouped.length > 0 && (
+              <a
+                href="#group-other"
+                className="transition-smooth flex shrink-0 items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-bold text-text hover:bg-secondary/40"
+              >
+                <span aria-hidden="true">🐾</span>
+                More
+              </a>
+            )}
+          </div>
+        </nav>
+      )}
+
+      {/* Group headings use scroll-mt-40 (not the site-wide scroll-mt-24)
+          because jumping here has two stacked sticky bars to clear: the
+          global Header plus this page's own group-jump nav above. */}
       {!searching ? (
-        <div className="mt-14 flex flex-col gap-16">
+        <div className="mt-10 flex flex-col gap-16">
           {grouped.map(({ group, breeds: groupBreeds }) => (
             <section key={group.value} aria-labelledby={`group-${group.value}`}>
               <div className="flex flex-col gap-1">
                 <h2
                   id={`group-${group.value}`}
-                  className="flex items-center gap-3 font-display text-2xl font-semibold tracking-tight text-text sm:text-3xl"
+                  className="scroll-mt-40 flex items-center gap-3 font-display text-2xl font-semibold tracking-tight text-text sm:text-3xl"
                 >
                   <span aria-hidden="true">{group.emoji}</span>
                   {group.label}
@@ -190,7 +259,14 @@ export function BreedSearch({ breeds, grouped, ungrouped }: BreedSearchProps) {
               </div>
               <ul className="mt-6 grid list-none gap-6 sm:grid-cols-2 lg:grid-cols-3">
                 {groupBreeds.map((breed) => (
-                  <BreedGridItem key={breed.id} breed={breed} headingLevel="h3" />
+                  <BreedGridItem
+                    key={breed.id}
+                    breed={breed}
+                    headingLevel="h3"
+                    selected={compareIds.includes(breed.id)}
+                    canSelectMore={compareIds.length < MAX_COMPARE}
+                    onToggleCompare={toggleCompare}
+                  />
                 ))}
               </ul>
             </section>
@@ -200,13 +276,20 @@ export function BreedSearch({ breeds, grouped, ungrouped }: BreedSearchProps) {
             <section aria-labelledby="group-other">
               <h2
                 id="group-other"
-                className="font-display text-2xl font-semibold tracking-tight text-text sm:text-3xl"
+                className="scroll-mt-40 font-display text-2xl font-semibold tracking-tight text-text sm:text-3xl"
               >
                 More breeds
               </h2>
               <ul className="mt-6 grid list-none gap-6 sm:grid-cols-2 lg:grid-cols-3">
                 {ungrouped.map((breed) => (
-                  <BreedGridItem key={breed.id} breed={breed} headingLevel="h3" />
+                  <BreedGridItem
+                    key={breed.id}
+                    breed={breed}
+                    headingLevel="h3"
+                    selected={compareIds.includes(breed.id)}
+                    canSelectMore={compareIds.length < MAX_COMPARE}
+                    onToggleCompare={toggleCompare}
+                  />
                 ))}
               </ul>
             </section>
@@ -215,7 +298,14 @@ export function BreedSearch({ breeds, grouped, ungrouped }: BreedSearchProps) {
       ) : count > 0 ? (
         <ul className="mt-12 grid list-none gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {results.map((breed) => (
-            <BreedGridItem key={breed.id} breed={breed} headingLevel="h2" />
+            <BreedGridItem
+              key={breed.id}
+              breed={breed}
+              headingLevel="h2"
+              selected={compareIds.includes(breed.id)}
+              canSelectMore={compareIds.length < MAX_COMPARE}
+              onToggleCompare={toggleCompare}
+            />
           ))}
         </ul>
       ) : (
@@ -232,6 +322,13 @@ export function BreedSearch({ breeds, grouped, ungrouped }: BreedSearchProps) {
           </p>
         </div>
       )}
+
+      <CompareTray
+        breeds={breeds}
+        selectedIds={compareIds}
+        onRemove={(id) => setCompareIds((current) => current.filter((x) => x !== id))}
+        onClear={() => setCompareIds([])}
+      />
     </div>
   );
 }

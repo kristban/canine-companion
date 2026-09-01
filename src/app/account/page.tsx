@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { SignupForm } from "@/components/SignupForm";
@@ -41,6 +42,14 @@ export default async function AccountPage() {
             <p className="mt-3 text-lg leading-relaxed text-muted">
               Manage your public profile and sign-in email.
             </p>
+            {profile?.username && (
+              <Link
+                href={`/u/${profile.username}`}
+                className="transition-smooth mt-2 inline-block text-sm font-bold text-link hover:underline"
+              >
+                View your public profile →
+              </Link>
+            )}
           </div>
 
           <PublicProfileForm

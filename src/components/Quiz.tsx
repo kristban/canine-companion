@@ -1,13 +1,16 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { questions, QuizOption } from "@/lib/questions";
+import { readQuizProgress, saveQuizProgress } from "@/lib/quizProgress";
 
 interface QuizProps {
   onComplete: (answers: QuizOption[]) => void;
   onCancel: () => void;
-  // Lets Results.tsx send the visitor back to their last answered question
+  // Lets Results.tsx send the visitor back to a specific answered question
   // (to tweak it) instead of always restarting the whole quiz from scratch.
+  // Left undefined for a genuinely fresh start, which is also the signal to
+  // hydrate from any in-progress answers saved in sessionStorage (see below).
   initialAnswers?: QuizOption[];
   initialStep?: number;
 }
@@ -15,16 +18,48 @@ interface QuizProps {
 export function Quiz({
   onComplete,
   onCancel,
-  initialAnswers = [],
+  initialAnswers,
   initialStep = 0,
 }: QuizProps) {
-  const [step, setStep] = useState(initialStep);
-  const [answers, setAnswers] = useState<QuizOption[]>(initialAnswers);
+  const [step, setStep] = useState(() => {
+    if (initialAnswers === undefined) {
+      const saved = readQuizProgress();
+      if (saved) return saved.step;
+    }
+    return initialStep;
+  });
+  const [answers, setAnswers] = useState<QuizOption[]>(() => {
+    if (initialAnswers === undefined) {
+      const saved = readQuizProgress();
+      if (saved) return saved.answers;
+    }
+    return initialAnswers ?? [];
+  });
   const [direction, setDirection] = useState<"forward" | "back">("forward");
 
   const question = questions[step];
   const progress = Math.round((step / questions.length) * 100);
   const selectedOptionId = answers[step]?.id;
+
+  // Persist in-progress answers so a refresh doesn't lose them. Cleared by
+  // AppShell once the quiz completes or is explicitly cancelled/restarted.
+  useEffect(() => {
+    saveQuizProgress({ step, answers });
+  }, [step, answers]);
+
+  // Number-key shortcuts (1-4) let keyboard users answer without tabbing
+  // through each option button.
+  useEffect(() => {
+    function handleKeyDown(event: KeyboardEvent) {
+      const index = Number(event.key) - 1;
+      if (Number.isInteger(index) && index >= 0 && index < question.options.length) {
+        selectOption(question.options[index]);
+      }
+    }
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [question]);
 
   function selectOption(option: QuizOption) {
     const next = [...answers.slice(0, step), option];
@@ -86,7 +121,7 @@ export function Quiz({
 
         <fieldset className="mt-8 flex flex-col gap-3">
           <legend className="sr-only">{question.question}</legend>
-          {question.options.map((option) => {
+          {question.options.map((option, index) => {
             const isSelected = selectedOptionId === option.id;
             return (
               <button
@@ -100,6 +135,12 @@ export function Quiz({
                     : "bg-surface"
                 }`}
               >
+                <span
+                  aria-hidden="true"
+                  className="hidden h-6 w-6 shrink-0 items-center justify-center rounded-full border-2 border-border bg-background-alt text-xs font-bold text-muted sm:flex"
+                >
+                  {index + 1}
+                </span>
                 <span className="text-2xl" aria-hidden="true">
                   {option.icon}
                 </span>

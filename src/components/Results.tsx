@@ -8,19 +8,21 @@ import { QuizOption } from "@/lib/questions";
 import { BreedCard } from "./BreedCard";
 import { AnswersRecap } from "./AnswersRecap";
 import { SaveResultsButton } from "./results/SaveResultsButton";
+import { ShareResultsButton } from "./results/ShareResultsButton";
+import { ResultsViewToggle } from "./results/ResultsViewToggle";
 
 interface ResultsProps {
   results: MatchResult[];
   answers: QuizOption[];
   onRestart: () => void;
-  onEditLastAnswer: () => void;
+  onEditAnswer: (index: number) => void;
 }
 
 export function Results({
   results,
   answers,
   onRestart,
-  onEditLastAnswer,
+  onEditAnswer,
 }: ResultsProps) {
   const topResults = results.slice(0, 5);
 
@@ -80,28 +82,45 @@ export function Results({
           Based on your answers, here&apos;s how well each breed fits your
           lifestyle.
         </p>
+        <details className="mx-auto mt-3 max-w-md text-left">
+          <summary className="cursor-pointer text-center text-sm font-bold text-link">
+            What does the % mean?
+          </summary>
+          <p className="mt-2 text-sm leading-relaxed text-muted">
+            It&apos;s how closely a breed&apos;s traits line up with your
+            answers — not a guarantee of temperament. 100% means every answer
+            you gave points toward that breed; lower scores mean more of a
+            trade-off somewhere (energy level, grooming, apartment-friendliness,
+            and so on).
+          </p>
+        </details>
       </div>
 
-      <AnswersRecap answers={answers} />
+      <AnswersRecap answers={answers} onEditAnswer={onEditAnswer} />
 
-      <div className="flex flex-col gap-4">
-        {topResults.map((result, index) => (
-          <div
-            key={result.breed.id}
-            className="animate-reveal-rise"
-            style={{ animationDelay: `${index * 90}ms` }}
-          >
-            <BreedCard
-              result={result}
-              rank={index}
-              reason={summarizeGoodMatch(
-                result.breed,
-                explainMatch(result.breed, answers),
-              )}
-            />
+      <ResultsViewToggle
+        topBreeds={topResults.map((result) => result.breed)}
+        listView={
+          <div className="flex flex-col gap-4">
+            {topResults.map((result, index) => (
+              <div
+                key={result.breed.id}
+                className="animate-reveal-rise"
+                style={{ animationDelay: `${index * 90}ms` }}
+              >
+                <BreedCard
+                  result={result}
+                  rank={index}
+                  reason={summarizeGoodMatch(
+                    result.breed,
+                    explainMatch(result.breed, answers),
+                  )}
+                />
+              </div>
+            ))}
           </div>
-        ))}
-      </div>
+        }
+      />
 
       {worstResults.length > 0 && (
         <section className="mt-12" aria-labelledby="poor-matches-heading">
@@ -138,7 +157,10 @@ export function Results({
       )}
 
       <div className="mt-10 flex flex-col items-center gap-6">
-        <SaveResultsButton results={results} answers={answers} />
+        <div className="flex flex-wrap items-center justify-center gap-4">
+          <SaveResultsButton results={results} answers={answers} />
+          <ShareResultsButton results={results} />
+        </div>
         <button
           type="button"
           onClick={onRestart}
@@ -148,7 +170,7 @@ export function Results({
         </button>
         <button
           type="button"
-          onClick={onEditLastAnswer}
+          onClick={() => onEditAnswer(Math.max(0, answers.length - 1))}
           className="transition-smooth text-sm font-bold text-muted hover:text-link"
         >
           ← Back to your last answer
