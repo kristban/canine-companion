@@ -92,7 +92,7 @@ export function Footer() {
                   hello@caninecompanion.app
                 </a>
               </li>
-              <li className="text-sm text-muted">Portland, OR</li>
+              <li className="text-sm text-muted">Cork, Ireland</li>
             </ul>
           </address>
         </div>
