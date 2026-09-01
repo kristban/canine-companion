@@ -24,6 +24,7 @@ type BreedValues = {
   emoji: string;
   tagline: string;
   description: string;
+  imageUrl: string;
   size: string;
   group: string;
 } & Record<TraitKey, string>;
@@ -35,6 +36,7 @@ function toValues(breed: AdminBreed | null): BreedValues {
     emoji: breed?.emoji ?? "",
     tagline: breed?.tagline ?? "",
     description: breed?.description ?? "",
+    imageUrl: breed?.imageUrl ?? "",
     size: breed?.size ?? "medium",
     group: breed?.group ?? BREED_GROUPS[0].value,
   } as BreedValues;
@@ -153,6 +155,15 @@ export function BreedForm({ action, breed, mode }: BreedFormProps) {
           onChange={set("description")}
           error={err("description")}
           rows={4}
+        />
+        <TextField
+          id="breed-image-url"
+          name="imageUrl"
+          label="Photo URL"
+          value={values.imageUrl}
+          onChange={set("imageUrl")}
+          error={err("imageUrl")}
+          hint="Optional. Leave blank to show the emoji instead on the breed's public page."
         />
       </fieldset>
 

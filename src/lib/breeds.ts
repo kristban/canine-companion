@@ -95,6 +95,8 @@ export interface Breed {
   emoji: string;
   tagline: string;
   description: string;
+  /** Optional photo URL for the public breed detail page; null falls back to the emoji. */
+  imageUrl: string | null;
   size: Size;
   group: BreedGroup;
   /** 1 = very low, 5 = very high */
@@ -140,3 +142,77 @@ export const TRAIT_FIELDS = [
 export type TraitKey = (typeof TRAIT_FIELDS)[number]["key"];
 
 export const TRAIT_KEYS: readonly TraitKey[] = TRAIT_FIELDS.map((f) => f.key);
+
+/**
+ * Plain-language description of a trait at each extreme, used by
+ * `getBreedHighlights` for the "At a glance" summary on the public breed
+ * detail page. Deliberately neutral/descriptive rather than good-vs-bad
+ * (unlike `TRAIT_REASON_PHRASES` in `match.ts`, which judges a trait against a
+ * *user's* stated preference) — a standalone breed page has no quiz answers
+ * to judge against.
+ */
+const TRAIT_HIGHLIGHT_PHRASES: Record<TraitKey, { high: string; low: string }> = {
+  energy: {
+    high: "Needs plenty of daily exercise",
+    low: "Content with a relaxed pace",
+  },
+  grooming: {
+    high: "Needs regular grooming to stay comfortable",
+    low: "Easy, low-maintenance coat care",
+  },
+  trainability: {
+    high: "Picks up training quickly",
+    low: "Training takes patience and consistency",
+  },
+  goodWithKids: {
+    high: "Great around kids",
+    low: "Better suited to homes without young kids",
+  },
+  goodWithOtherPets: {
+    high: "Gets along well with other pets",
+    low: "May need careful introductions to other pets",
+  },
+  apartmentFriendly: {
+    high: "Adapts well to apartment living",
+    low: "Does best with more space",
+  },
+  independence: {
+    high: "Comfortable spending time alone",
+    low: "Prefers to stay close to its people",
+  },
+  noviceFriendly: {
+    high: "A great match for first-time owners",
+    low: "Best suited to experienced owners",
+  },
+  vocal: {
+    high: "Tends to be quite vocal",
+    low: "Generally quiet",
+  },
+  runningPartner: {
+    high: "Makes a strong running companion",
+    low: "Not built for serious running",
+  },
+  heatTolerance: {
+    high: "Handles warm weather well",
+    low: "Struggles in hot weather",
+  },
+  coldTolerance: {
+    high: "Handles cold weather well",
+    low: "Struggles in cold weather",
+  },
+};
+
+/**
+ * Up to `max` short, plain-language highlights for a breed's detail page,
+ * picked from its most extreme trait scores (furthest from the neutral
+ * midpoint of 3) and phrased via `TRAIT_HIGHLIGHT_PHRASES`. Traits scored
+ * exactly 3 are unremarkable and never included.
+ */
+export function getBreedHighlights(breed: Breed, max = 3): string[] {
+  return TRAIT_FIELDS.map((field) => breed[field.key])
+    .map((value, index) => ({ key: TRAIT_FIELDS[index].key, value }))
+    .filter((entry) => entry.value !== 3)
+    .sort((a, b) => Math.abs(b.value - 3) - Math.abs(a.value - 3))
+    .slice(0, max)
+    .map((entry) => TRAIT_HIGHLIGHT_PHRASES[entry.key][entry.value >= 4 ? "high" : "low"]);
+}

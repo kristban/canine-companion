@@ -78,6 +78,14 @@ create trigger breeds_set_updated_at
 alter table public.breeds
   add column if not exists breed_group text;
 
+-- ---------------------------------------------------------------------------
+-- Breed photo (added after breed_group). Optional URL to a real photo shown
+-- on the public /breeds/[slug] page; falls back to the emoji when null.
+-- Idempotent for the same reason as breed_group above.
+-- ---------------------------------------------------------------------------
+alter table public.breeds
+  add column if not exists image_url text;
+
 alter table public.breeds drop constraint if exists breeds_breed_group_check;
 alter table public.breeds
   add constraint breeds_breed_group_check

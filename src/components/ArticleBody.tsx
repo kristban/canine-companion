@@ -41,6 +41,20 @@ const components: Components = {
       {children}
     </ol>
   ),
+  img: ({ src, alt }) => (
+    // Arbitrary author-supplied URL (from the markdown body) — not run
+    // through next/image, which only allows a fixed set of remote hosts
+    // (see next.config.ts). Same pattern as the breed photo on
+    // /breeds/[slug]. No forced aspect ratio/cropping so the whole photo
+    // shows regardless of orientation.
+    // eslint-disable-next-line @next/next/no-img-element
+    <img
+      src={typeof src === "string" ? src : undefined}
+      alt={alt ?? ""}
+      loading="lazy"
+      className="mt-6 w-full rounded-2xl border-2 border-border shadow-hard-sm"
+    />
+  ),
   blockquote: ({ children }) => (
     <blockquote className="mt-6 rounded-2xl border-2 border-border bg-background-alt p-4 text-sm leading-relaxed text-muted">
       {children}

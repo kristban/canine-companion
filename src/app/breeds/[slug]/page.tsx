@@ -4,7 +4,12 @@ import { notFound } from "next/navigation";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { SignupForm } from "@/components/SignupForm";
-import { BREED_GROUPS, TRAIT_FIELDS, breedGroupLabel } from "@/lib/breeds";
+import {
+  BREED_GROUPS,
+  TRAIT_FIELDS,
+  breedGroupLabel,
+  getBreedHighlights,
+} from "@/lib/breeds";
 import { getBreeds } from "@/lib/getBreeds";
 
 interface BreedPageProps {
@@ -52,6 +57,7 @@ export default async function BreedPage({ params }: BreedPageProps) {
   if (!breed) notFound();
 
   const group = BREED_GROUPS.find((g) => g.value === breed.group);
+  const highlights = getBreedHighlights(breed);
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -66,6 +72,23 @@ export default async function BreedPage({ params }: BreedPageProps) {
           </Link>
 
           <div className="mt-6 flex flex-col gap-6 rounded-3xl border-3 border-border bg-surface p-6 shadow-hard sm:p-8">
+            {breed.imageUrl ? (
+              <div className="flex w-full items-center justify-center overflow-hidden rounded-[1.75rem] border-3 border-border bg-background-alt shadow-hard-sm">
+                {/* Arbitrary admin-supplied URL — not run through next/image,
+                    which only allows a fixed set of remote hosts (see
+                    next.config.ts). Same pattern as /u/[username].
+                    object-contain (not cover) + no forced aspect ratio, so
+                    portrait photos aren't cropped — breed photos vary in
+                    orientation since they're admin-uploaded. */}
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={breed.imageUrl}
+                  alt={breed.name}
+                  className="max-h-[28rem] w-full object-contain"
+                />
+              </div>
+            ) : null}
+
             <div className="flex items-center gap-4">
               <span
                 className="flex h-20 w-20 shrink-0 items-center justify-center rounded-2xl border-2 border-border bg-secondary/40 text-5xl"
@@ -98,6 +121,25 @@ export default async function BreedPage({ params }: BreedPageProps) {
                 {breed.description}
               </p>
             </div>
+
+            {highlights.length > 0 && (
+              <div>
+                <h2 className="font-display text-sm font-semibold uppercase tracking-wide text-muted">
+                  At a glance
+                </h2>
+                <ul className="mt-2 flex flex-col gap-1.5">
+                  {highlights.map((highlight) => (
+                    <li
+                      key={highlight}
+                      className="flex items-start gap-2 text-base font-semibold text-text"
+                    >
+                      <span aria-hidden="true">🐾</span>
+                      {highlight}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
 
             <dl className="grid grid-cols-1 gap-3 sm:grid-cols-2">
               {TRAIT_FIELDS.map((field) => (

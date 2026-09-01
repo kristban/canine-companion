@@ -31,6 +31,7 @@ interface BreedRow {
   emoji: string;
   tagline: string;
   description: string;
+  image_url: string | null;
   size: Size;
   breed_group: BreedGroup;
   energy: number;
@@ -73,6 +74,7 @@ function mapRow(row: BreedRow): AdminBreed {
     emoji: row.emoji,
     tagline: row.tagline,
     description: row.description,
+    imageUrl: row.image_url,
     size: row.size,
     group: row.breed_group,
     energy: row.energy,
@@ -162,6 +164,10 @@ export function validateBreed(formData: FormData): ValidationResult {
     "Description",
   );
 
+  const imageUrlRaw = formData.get("imageUrl");
+  const imageUrl =
+    typeof imageUrlRaw === "string" && imageUrlRaw.trim() ? imageUrlRaw.trim() : null;
+
   const sizeRaw = formData.get("size");
   const size = typeof sizeRaw === "string" ? sizeRaw : "";
   if (!SIZES.includes(size as Size)) {
@@ -180,6 +186,7 @@ export function validateBreed(formData: FormData): ValidationResult {
     emoji,
     tagline,
     description,
+    image_url: imageUrl,
     size,
     breed_group: group,
   };

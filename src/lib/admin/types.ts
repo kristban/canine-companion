@@ -40,6 +40,7 @@ export interface AdminBreed {
   emoji: string;
   tagline: string;
   description: string;
+  imageUrl: string | null;
   size: Size;
   group: BreedGroup;
   energy: number;

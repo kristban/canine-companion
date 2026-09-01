@@ -7,6 +7,7 @@ interface BreedRow {
   emoji: string;
   tagline: string;
   description: string;
+  image_url: string | null;
   size: Breed["size"];
   breed_group: Breed["group"];
   energy: number;
@@ -33,6 +34,7 @@ function mapRow(row: BreedRow): Breed {
     emoji: row.emoji,
     tagline: row.tagline,
     description: row.description,
+    imageUrl: row.image_url,
     size: row.size,
     group: row.breed_group,
     energy: row.energy,
