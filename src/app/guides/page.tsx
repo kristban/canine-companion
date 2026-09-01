@@ -10,6 +10,7 @@ export const metadata: Metadata = {
   title: "Paws & Pointers — Canine Companion",
   description:
     "Practical guides and articles for new and existing dog parents, covering training, health, and everyday life with a dog.",
+  alternates: { canonical: "/guides" },
 };
 
 // Standalone route — renders its own Header/Footer chrome (like /breeds and

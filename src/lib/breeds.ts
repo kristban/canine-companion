@@ -112,3 +112,31 @@ export interface Breed {
   heatTolerance: number;
   coldTolerance: number;
 }
+
+/**
+ * The 12 scored traits, in display order, with a label + icon. Drives the
+ * admin breed form's numeric inputs and the trait bars on both the admin
+ * breed detail page and the public `/breeds/[slug]` page.
+ */
+export const TRAIT_FIELDS = [
+  { key: "energy", label: "Energy", icon: "⚡" },
+  { key: "grooming", label: "Grooming", icon: "✂️" },
+  { key: "trainability", label: "Trainability", icon: "🎓" },
+  { key: "goodWithKids", label: "Good with kids", icon: "🧒" },
+  { key: "goodWithOtherPets", label: "Good with other pets", icon: "🐈" },
+  { key: "apartmentFriendly", label: "Apartment friendly", icon: "🏢" },
+  { key: "independence", label: "Independence", icon: "🦴" },
+  { key: "noviceFriendly", label: "Novice friendly", icon: "🌱" },
+  { key: "vocal", label: "Vocal", icon: "🔊" },
+  { key: "runningPartner", label: "Running partner", icon: "🏃" },
+  { key: "heatTolerance", label: "Heat tolerance", icon: "☀️" },
+  { key: "coldTolerance", label: "Cold tolerance", icon: "❄️" },
+] as const satisfies ReadonlyArray<{
+  key: keyof Breed;
+  label: string;
+  icon: string;
+}>;
+
+export type TraitKey = (typeof TRAIT_FIELDS)[number]["key"];
+
+export const TRAIT_KEYS: readonly TraitKey[] = TRAIT_FIELDS.map((f) => f.key);

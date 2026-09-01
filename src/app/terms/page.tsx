@@ -4,6 +4,7 @@ import { LegalPage } from "@/components/LegalPage";
 export const metadata: Metadata = {
   title: "Terms of Service — Canine Companion",
   description: "The terms that apply to using the Canine Companion quiz.",
+  alternates: { canonical: "/terms" },
 };
 
 export default function TermsOfServicePage() {

@@ -5,6 +5,7 @@ export const metadata: Metadata = {
   title: "Privacy Policy — Canine Companion",
   description:
     "How Canine Companion handles your information: the quiz runs entirely in your browser, plus what we collect if you sign up for the newsletter.",
+  alternates: { canonical: "/privacy" },
 };
 
 export default function PrivacyPolicyPage() {

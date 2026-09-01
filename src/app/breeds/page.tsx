@@ -11,6 +11,7 @@ export const metadata: Metadata = {
   title: "Dog Breeds — Canine Companion",
   description:
     "Browse every dog breed in the Canine Companion matcher, from the Australian Shepherd to the Yorkshire Terrier, then take the quiz to find your match.",
+  alternates: { canonical: "/breeds" },
 };
 
 // Standalone route — renders its own Header/Footer chrome (like not-found.tsx),

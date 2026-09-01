@@ -1,6 +1,7 @@
 "use client";
 
 import { useId, useMemo, useState } from "react";
+import Link from "next/link";
 import { Breed, BREED_GROUPS } from "@/lib/breeds";
 import { searchBreeds } from "@/lib/breedSearch";
 import { useReveal } from "./Reveal";
@@ -26,7 +27,10 @@ function BreedGridItem({
 
   return (
     <li ref={ref} className={`flex ${revealClassName}`}>
-      <article className="transition-smooth flex flex-1 flex-col gap-4 rounded-3xl border-3 border-border bg-surface p-6 shadow-hard hover:-translate-y-1">
+      <Link
+        href={`/breeds/${breed.id}`}
+        className="transition-smooth flex flex-1 flex-col gap-4 rounded-3xl border-3 border-border bg-surface p-6 shadow-hard hover:-translate-y-1 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+      >
         <div className="flex items-center gap-4">
           <span
             className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl border-2 border-border bg-secondary/40 text-4xl"
@@ -72,7 +76,7 @@ function BreedGridItem({
             </div>
           ))}
         </dl>
-      </article>
+      </Link>
     </li>
   );
 }

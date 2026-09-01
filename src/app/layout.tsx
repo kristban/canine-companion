@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Nunito, Fredoka } from "next/font/google";
 import { CookieConsent } from "@/components/CookieConsent";
 import { SessionProvider } from "@/components/SessionProvider";
+import { SITE_NAME, SITE_URL } from "@/lib/site";
 import "./globals.css";
 
 const nunito = Nunito({
@@ -15,10 +16,23 @@ const fredoka = Fredoka({
   weight: ["500", "600", "700"],
 });
 
+const description =
+  "Answer a few quick questions and discover which dog breeds best match your lifestyle.";
+
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
   title: "Canine Companion — Find Your Perfect Dog Breed",
-  description:
-    "Answer a few quick questions and discover which dog breeds best match your lifestyle.",
+  description,
+  openGraph: {
+    title: "Canine Companion — Find Your Perfect Dog Breed",
+    description,
+    url: "/",
+    siteName: SITE_NAME,
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+  },
 };
 
 // Runs before paint so the page never flashes the wrong theme: an explicit

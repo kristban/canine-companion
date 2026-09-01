@@ -6,11 +6,18 @@
 // the server-only data layer. Keep it that way — do not import the Supabase
 // data helpers here.
 
-// The breed-group taxonomy is a single source of truth in the public domain
-// module (pure types + plain data, safe to import here). Re-exported so admin
-// components can pull it from this one module alongside the other admin types.
-import { BREED_GROUPS, type BreedGroup } from "@/lib/breeds";
-export { BREED_GROUPS, type BreedGroup };
+// The breed-group taxonomy and trait field descriptors are a single source of
+// truth in the public domain module (pure types + plain data, safe to import
+// here). Re-exported so admin components can pull them from this one module
+// alongside the other admin types.
+import {
+  BREED_GROUPS,
+  TRAIT_FIELDS,
+  TRAIT_KEYS,
+  type BreedGroup,
+  type TraitKey,
+} from "@/lib/breeds";
+export { BREED_GROUPS, TRAIT_FIELDS, TRAIT_KEYS, type BreedGroup, type TraitKey };
 
 export type Size = "small" | "medium" | "large";
 
@@ -78,33 +85,6 @@ export interface AdminArticle {
   createdAt?: string;
   updatedAt?: string;
 }
-
-/**
- * The 12 scored traits, in display order, with a label + icon. Drives the breed
- * form's numeric inputs and the read-only trait bars on the detail page.
- */
-export const TRAIT_FIELDS = [
-  { key: "energy", label: "Energy", icon: "⚡" },
-  { key: "grooming", label: "Grooming", icon: "✂️" },
-  { key: "trainability", label: "Trainability", icon: "🎓" },
-  { key: "goodWithKids", label: "Good with kids", icon: "🧒" },
-  { key: "goodWithOtherPets", label: "Good with other pets", icon: "🐈" },
-  { key: "apartmentFriendly", label: "Apartment friendly", icon: "🏢" },
-  { key: "independence", label: "Independence", icon: "🦴" },
-  { key: "noviceFriendly", label: "Novice friendly", icon: "🌱" },
-  { key: "vocal", label: "Vocal", icon: "🔊" },
-  { key: "runningPartner", label: "Running partner", icon: "🏃" },
-  { key: "heatTolerance", label: "Heat tolerance", icon: "☀️" },
-  { key: "coldTolerance", label: "Cold tolerance", icon: "❄️" },
-] as const satisfies ReadonlyArray<{
-  key: keyof AdminBreed;
-  label: string;
-  icon: string;
-}>;
-
-export type TraitKey = (typeof TRAIT_FIELDS)[number]["key"];
-
-export const TRAIT_KEYS: readonly TraitKey[] = TRAIT_FIELDS.map((f) => f.key);
 
 /**
  * State returned by the create/update Server Actions and consumed by the forms

@@ -5,6 +5,7 @@ export const metadata: Metadata = {
   title: "Cookie Policy — Canine Companion",
   description:
     "What Canine Companion stores in your browser and why, and how to manage it.",
+  alternates: { canonical: "/cookies" },
 };
 
 export default function CookiePolicyPage() {

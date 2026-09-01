@@ -6,6 +6,7 @@ import { Footer } from "@/components/Footer";
 import { SignupForm } from "@/components/SignupForm";
 import { ArticleBody } from "@/components/ArticleBody";
 import { getArticles } from "@/lib/getArticles";
+import { SITE_NAME, SITE_URL } from "@/lib/site";
 
 interface ArticlePageProps {
   params: Promise<{ slug: string }>;
@@ -26,6 +27,14 @@ export async function generateMetadata({
   return {
     title: `${article.title} — Paws & Pointers`,
     description: article.excerpt,
+    alternates: { canonical: `/guides/${article.id}` },
+    openGraph: {
+      title: article.title,
+      description: article.excerpt,
+      url: `/guides/${article.id}`,
+      type: "article",
+      publishedTime: article.date,
+    },
   };
 }
 
@@ -51,8 +60,30 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
   const article = articles.find((a) => a.id === slug);
   if (!article) notFound();
 
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    headline: article.title,
+    description: article.excerpt,
+    datePublished: article.date,
+    image: `${SITE_URL}/opengraph-image`,
+    keywords: article.tags.length > 0 ? article.tags.join(", ") : undefined,
+    author: { "@type": "Organization", name: SITE_NAME },
+    publisher: { "@type": "Organization", name: SITE_NAME },
+    mainEntityOfPage: {
+      "@type": "WebPage",
+      "@id": `${SITE_URL}/guides/${article.id}`,
+    },
+  };
+
   return (
     <div className="flex min-h-screen flex-col">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c"),
+        }}
+      />
       <Header />
       <main className="flex-1 bg-background">
         <article className="mx-auto w-full max-w-3xl px-4 py-16 sm:px-6">
